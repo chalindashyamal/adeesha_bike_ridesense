@@ -21,6 +21,8 @@ class _LoyalityViewState extends State<LoyalityView> {
    final _formKey = GlobalKey<FormState>();
    String points = "Loading...";
 
+   final int withdrawValue = 0;
+
    Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -193,8 +195,9 @@ class _LoyalityViewState extends State<LoyalityView> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: TextFormField(textAlign: TextAlign.center,
+                enabled: false,
                   decoration: InputDecoration(
-                    hintText: "Enter Value"
+                    labelText: withdrawValue,
                   ),
                   validator: (inputValue){
                     if(inputValue!.isEmpty){
@@ -208,42 +211,25 @@ class _LoyalityViewState extends State<LoyalityView> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                      setState(() {
-                        isValidForm = true;
-                      });
-                  } else{
+                onPressed: (){                 
                     setState(() {
-                        isValidForm = false;
-                      });
-                  }
+                        withdrawValue = 20;
+                    });
+                  
               }, child: Text("20"),
               ),
               ElevatedButton(
                 onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                      setState(() {
-                        isValidForm = true;
-                      });
-                  } else{
-                    setState(() {
-                        isValidForm = false;
-                      });
-                  }
+                  setState(() {
+                      withdrawValue = 50;
+                  });
               }, child: Text("50"),
               ),
               ElevatedButton(
                 onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                      setState(() {
-                        isValidForm = true;
-                      });
-                  } else{
-                    setState(() {
-                        isValidForm = false;
-                      });
-                  }
+                  setState(() {
+                      withdrawValue = 100;
+                  });
               }, child: Text("100"),
               ),
                 ],
