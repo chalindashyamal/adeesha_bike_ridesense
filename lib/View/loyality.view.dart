@@ -41,14 +41,14 @@ class _LoyalityViewState extends State<LoyalityView> {
       });
     }
   }
-
+  DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
   Future<Map<String, dynamic>?> fetchUserData(User user) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
-          .instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      
 
       if (userData.exists) {
         return userData.data();
@@ -60,6 +60,40 @@ class _LoyalityViewState extends State<LoyalityView> {
       AppToastmsg.appToastMeassage('Failed to fetch user data: $e');
 
       return null;
+    }
+  }
+
+  String points = "Loading..."; // Initialize with loading message
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPoints();
+  }
+
+  Future<void> fetchPoints() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> pointsSnapshot = userData
+            .collection('points')
+            .doc('PsVVqV0JVqqz79HI8KBf')
+            .get();
+
+        if (pointsSnapshot.exists) {
+          setState(() {
+            points = pointsSnapshot.data()?['value'] ?? "Value not found";
+          });
+        } else {
+          setState(() {
+            points = "Document not found";
+          });
+        }
+      } catch (e) {
+        setState(() {
+          points = "Failed to fetch points: $e";
+        });
+      }
     }
   }
 
@@ -115,7 +149,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         children: [
                           Row(
                             children: [
-                              Text("100"),
+                              Text(points),
                               Text("Points"),
                             ],
                           ),
