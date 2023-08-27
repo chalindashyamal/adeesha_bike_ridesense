@@ -24,7 +24,7 @@ class _LoyalityViewState extends State<LoyalityView> {
     await FirebaseAuth.instance.signOut();
   }
 
-  String userDataString = "";
+  Map<String, dynamic>? userData;
 
   @override
   void initState() {
@@ -68,7 +68,7 @@ class _LoyalityViewState extends State<LoyalityView> {
 
     String userName = userData?['username'] ?? 'N/A';
     String email = userData?['email'] ?? 'N/A';
-    String address = userData['address'] ?? 'N/A';
+    String address = userData?['address'] ?? 'N/A';
     
     return Scaffold(
       appBar: AppBar(),
