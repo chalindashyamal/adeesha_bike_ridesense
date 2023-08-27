@@ -20,8 +20,34 @@ class _LoyalityViewState extends State<LoyalityView> {
     await FirebaseAuth.instance.signOut();
   }
 
+  String userDataString = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  Future<void> getUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      Map<String, dynamic>? userData = await fetchUserData(currentUser);
+      if (userData != null) { 
+        setState(() {
+          userDataString = jsonEncode(userData);
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    Map<String, dynamic> userData = jsonDecode(userDataString);
+    String userName = userData['username'] ?? 'N/A';
+    String email = userData['email'] ?? 'N/A';
+    String address = userData['address'] ?? 'N/A';
+    
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -37,12 +63,12 @@ class _LoyalityViewState extends State<LoyalityView> {
                       children: [
                         Row(
                           children: [
-                            Text("full name",style: TextStyle(),),
+                            Text(userName,style: TextStyle(),),
                             Icon(Icons.beenhere,color: Colors.blue,)
                           ],
                         ),
-                        Text("email",style: TextStyle(),),
-                        Text("address",style: TextStyle(),),
+                        Text(email,style: TextStyle(),),
+                        Text(address,style: TextStyle(),),
                       ],
                     ),
                     GestureDetector(child: Text("log out"),
