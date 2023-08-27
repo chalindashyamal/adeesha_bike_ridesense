@@ -1,5 +1,8 @@
+import 'package:adeesha_bike_ridesense/View/loyality.view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../View/login.view.dart';
 
 
 class AuthChanges extends StatelessWidget {
@@ -14,9 +17,9 @@ class AuthChanges extends StatelessWidget {
           return const CircularProgressIndicator();
         } else {
           if (snapshot.hasData) {
-            return const MainLayer();
+            return const LoyalityView();
           } else {
-            return const Loginscreen();
+            return  LoginView();
           }
         }
       },

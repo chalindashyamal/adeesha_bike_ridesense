@@ -20,166 +20,168 @@ class _LoyalityViewState extends State<LoyalityView> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: Column(
-          children: [
-            Container(
-              child: Row(
-                children: [
-                  Icon(Icons.person_outline, color: Colors.blue,size: 100, ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text("full name",style: TextStyle(),),
-                          Icon(Icons.beenhere,color: Colors.blue,)
-                        ],
-                      ),
-                      Text("email",style: TextStyle(),),
-                      Text("address",style: TextStyle(),),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(width: 1.0, color: Colors.grey)
-                ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Icon(Icons.person_outline, color: Colors.blue,size: 100, ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text("100"),
-                            Text("Points"),
+                            Text("full name",style: TextStyle(),),
+                            Icon(Icons.beenhere,color: Colors.blue,)
                           ],
                         ),
-                        Row(
-                          children: [
-                            Icon(Icons.star,color: Colors.yellow),
-                             Icon(Icons.star,color: Colors.yellow),
-                            Icon(Icons.star),
-                            Icon(Icons.star),
-                            Icon(Icons.star),
-                          ],
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                              Icon(Icons.star,color: Colors.yellow),
-                            Text("200 star")
-                          ],
-                        )
+                        Text("email",style: TextStyle(),),
+                        Text("address",style: TextStyle(),),
                       ],
                     )
                   ],
                 ),
               ),
-            ),
-            Form(
-        key: _formKey,
-        child: 
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: "Enter Mobile Number"
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(width: 1.0, color: Colors.grey)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text("100"),
+                              Text("Points"),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.star,color: Colors.yellow),
+                               Icon(Icons.star,color: Colors.yellow),
+                              Icon(Icons.star),
+                              Icon(Icons.star),
+                              Icon(Icons.star),
+                            ],
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                                Icon(Icons.star,color: Colors.yellow),
+                              Text("200 star")
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-                validator: (inputValue){
-                  if(inputValue!.isEmpty){
-                    return "Please enter";
-                  }
-                  return null;
-                },
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: "Enter Value"
+              Form(
+          key: _formKey,
+          child: 
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: TextFormField(textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    hintText: "Enter Mobile Number"
+                  ),
+                  validator: (inputValue){
+                    if(inputValue!.isEmpty){
+                      return "Please enter";
+                    }
+                    return null;
+                  },
                 ),
-                validator: (inputValue){
-                  if(inputValue!.isEmpty){
-                    return "Please Fill";
-                  }
-                  return null;
-                },
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-              onPressed: (){
-                if(_formKey.currentState!.validate()){
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: TextFormField(textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    hintText: "Enter Value"
+                  ),
+                  validator: (inputValue){
+                    if(inputValue!.isEmpty){
+                      return "Please Fill";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                onPressed: (){
+                  if(_formKey.currentState!.validate()){
+                      setState(() {
+                        isValidForm = true;
+                      });
+                  } else{
                     setState(() {
-                      isValidForm = true;
-                    });
-                } else{
-                  setState(() {
-                      isValidForm = false;
-                    });
-                }
-            }, child: Text("20"),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                if(_formKey.currentState!.validate()){
+                        isValidForm = false;
+                      });
+                  }
+              }, child: Text("20"),
+              ),
+              ElevatedButton(
+                onPressed: (){
+                  if(_formKey.currentState!.validate()){
+                      setState(() {
+                        isValidForm = true;
+                      });
+                  } else{
                     setState(() {
-                      isValidForm = true;
-                    });
-                } else{
-                  setState(() {
-                      isValidForm = false;
-                    });
-                }
-            }, child: Text("50"),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                if(_formKey.currentState!.validate()){
+                        isValidForm = false;
+                      });
+                  }
+              }, child: Text("50"),
+              ),
+              ElevatedButton(
+                onPressed: (){
+                  if(_formKey.currentState!.validate()){
+                      setState(() {
+                        isValidForm = true;
+                      });
+                  } else{
                     setState(() {
-                      isValidForm = true;
-                    });
-                } else{
-                  setState(() {
-                      isValidForm = false;
-                    });
-                }
-            }, child: Text("100"),
-            ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: (){
-                if(_formKey.currentState!.validate()){
+                        isValidForm = false;
+                      });
+                  }
+              }, child: Text("100"),
+              ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: (){
+                  if(_formKey.currentState!.validate()){
+                      setState(() {
+                        isValidForm = true;
+                      });
+                  } else{
                     setState(() {
-                      isValidForm = true;
-                    });
-                } else{
-                  setState(() {
-                      isValidForm = false;
-                    });
-                }
-            }, child: Text("Submit")),
-          ],
-        )
-        ),
-      LineChartSample2()    ],
+                        isValidForm = false;
+                      });
+                  }
+              }, child: Text("Submit")),
+            ],
+          )
+          ),
+              LineChartSample2()    ],
+          ),
         ),
       ),
     );

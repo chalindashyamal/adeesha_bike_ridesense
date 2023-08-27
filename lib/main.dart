@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 
-import 'View/login.view.dart';
-import 'View/signup.view.dart';
+import 'components/auth_state_changes.dart';
 import 'firebase_options.dart';
 
 void main() async{

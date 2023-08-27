@@ -1,8 +1,10 @@
 import 'package:adeesha_bike_ridesense/View/signup.view.dart';
-import 'package:adeesha_bike_ridesense/View/widgets/signinbutton.global.dart';
+
 import 'package:adeesha_bike_ridesense/View/widgets/text.form.global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../components/flutter_toast.dart';
 import '../utils/global.colors.dart';
 
 
@@ -17,8 +19,8 @@ class LoginView extends StatelessWidget {
   Future login() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _email.text,
-        password: _password.text,
+        email: emailController.text,
+        password: passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -104,7 +106,7 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                   ),
-                );
+                ),
                 const SizedBox(height: 25),
                 // const SocialLogin(),
                 const SizedBox(height: 220),
