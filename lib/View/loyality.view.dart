@@ -44,7 +44,8 @@ class _LoyalityViewState extends State<LoyalityView> {
                         Text("email",style: TextStyle(),),
                         Text("address",style: TextStyle(),),
                       ],
-                    )
+                    ),
+                    GestureDetector(child: Text("log out"),)
                   ],
                 ),
               ),
