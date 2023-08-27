@@ -1,7 +1,10 @@
 import 'package:adeesha_bike_ridesense/View/widgets/signupbutton.global.dart';
 import 'package:adeesha_bike_ridesense/View/widgets/text.form.global.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../components/flutter_toast.dart';
 import '../utils/global.colors.dart';
 import 'login.view.dart';
 
@@ -104,7 +107,7 @@ class SignupView extends StatelessWidget {
                   controller: _usernameController,
                   text: 'User Name',
                   obscure: false,
-                  textInputType: TextInputType.emailAddress,
+                  textInputType: TextInputType.text,
                 ),
                 const SizedBox(height: 20),
                 // address Input
@@ -112,14 +115,14 @@ class SignupView extends StatelessWidget {
                   controller: _addressController,
                   text: 'Address',
                   obscure: false,
-                  textInputType: TextInputType.emailAddress,
+                  textInputType: TextInputType.streetAddress,
                 ),
                 const SizedBox(height: 20),
                 // Password input
                 TextFormGlobal(
                   controller: _passwordController,
                   text: 'Password',
-                  textInputType: TextInputType.text,
+                  textInputType: TextInputType.visiblePassword,
                   obscure: true,
                 ),
                 const SizedBox(height: 20),
@@ -127,11 +130,37 @@ class SignupView extends StatelessWidget {
                 TextFormGlobal(
                   controller: _confirmPasswordController,
                   text: 'Confirm Password',
-                  textInputType: TextInputType.text,
+                  textInputType: TextInputType.visiblePassword,
                   obscure: true,
                 ),
                 const SizedBox(height: 10),
-                const ButtonGlobal1(),
+               InkWell(
+                onTap: () {
+                  // ignore: avoid_print
+                  _registerUserWithEmailAndPassword();
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    color: GlobalColor.mainColor,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
                 const SizedBox(height: 25),
                 // const SocialSignup(),
                 const SizedBox(height: 50),

@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 
 import 'View/login.view.dart';
+import 'View/signup.view.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
        // useMaterial3: true,
       ),
-      home: LoginView(),
+      home: SignupView(),
     );
   }
 }
