@@ -40,6 +40,27 @@ class _LoyalityViewState extends State<LoyalityView> {
     }
   }
 
+  Future<Map<String, dynamic>?> fetchUserData(User user) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (userData.exists) {
+        return userData.data();
+      } else {
+        AppToastmsg.appToastMeassage('User data not found in Firestore');
+        return null;
+      }
+    } catch (e) {
+      AppToastmsg.appToastMeassage('Failed to fetch user data: $e');
+
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
