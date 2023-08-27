@@ -19,7 +19,7 @@ class _LoyalityViewState extends State<LoyalityView> {
 
   bool isValidForm = false;
    final _formKey = GlobalKey<FormState>();
-   String points = "Loading...";
+   int points = 0;
 
    int withdrawValue = 0;
 
@@ -81,16 +81,50 @@ class _LoyalityViewState extends State<LoyalityView> {
 
         if (pointsSnapshot.exists) {
           setState(() {
-            points = pointsSnapshot.data()?['value'] ?? "Value not found";
+            points = (pointsSnapshot.data()?['myvalue'] ?? "Value not found");
           });
         } else {
-          print("Document not found");
+      
         }
       } catch (e) {
-        print("Failed to fetch points: $e");
+        
       }
     }
   }
+
+  Future<void> updatePoints(int incVal) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      try {
+        final DocumentReference  pointsDocRef = FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('points')
+            .doc('PsVVqV0JVqqz79HI8KBf');
+        await pointsDocRef.update({'myvalue': FieldValue.increment(incVal)});
+        fetchPoints(); // Fetch and update the local points after the update
+      } catch (e) {
+        print('Failed to update points: $e');
+      }
+    }
+  }
+
+  void incrementQuantity(int incVal) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    try {
+        final DocumentReference  itemRef = FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(currentUser!.uid)
+            .collection('points')
+            .doc('PsVVqV0JVqqz79HI8KBf');
+        await itemRef.update({'myvalue': FieldValue.increment(incVal)});
+        fetchPoints();
+      } catch (e) {
+        print('Failed to update points: $e');
+    }
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +178,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         children: [
                           Row(
                             children: [
-                              Text(points),
+                              Text(points.toString()),
                               Text("Points"),
                             ],
                           ),
@@ -236,15 +270,7 @@ class _LoyalityViewState extends State<LoyalityView> {
               ),
               ElevatedButton(
                 onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                      setState(() {
-                        isValidForm = true;
-                      });
-                  } else{
-                    setState(() {
-                        isValidForm = false;
-                      });
-                  }
+                 incrementQuantity(-withdrawValue);
               }, child: Text("Submit")),
             ],
           )
