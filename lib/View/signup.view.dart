@@ -8,10 +8,56 @@ import 'login.view.dart';
 
 class SignupView extends StatelessWidget {
   SignupView({Key? key}) : super(key: key);
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  Future<User?> _createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      // Handle any authentication exceptions (e.g., email already in use)
+      AppToastmsg.appToastMeassage('Failed to create user: ${e.message}');
+      return null;
+    }
+  }
+
+  Future<void> _uploadUsernameToFirestore(
+    User user,
+    String username,
+    String email,
+    String address,
+  ) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'username': username,
+        'email': email,
+        'address': address
+      });
+    } catch (e) {
+      // Handle any Firestore upload exceptions
+      AppToastmsg.appToastMeassage('Failed to upload username: $e');
+    }
+  }
+
+  void _registerUserWithEmailAndPassword() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String username = _usernameController.text;
+    String address = _addressController.text;
+
+    User? user = await _createUserWithEmailAndPassword(email, password);
+    if (user != null) {
+      // User created successfully, now upload the username to Firestore
+      await _uploadUsernameToFirestore(user, username, email, address);
+      AppToastmsg.appToastMeassage('User registered successfully!');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +93,7 @@ class SignupView extends StatelessWidget {
                 const SizedBox(height: 20),
                 // Email Input
                 TextFormGlobal(
-                  controller: emailController,
+                  controller: _emailController,
                   text: 'Email',
                   obscure: false,
                   textInputType: TextInputType.emailAddress,
@@ -55,7 +101,7 @@ class SignupView extends StatelessWidget {
                 const SizedBox(height: 20),
                 // username Input
                 TextFormGlobal(
-                  controller: emailController,
+                  controller: _usernameController,
                   text: 'User Name',
                   obscure: false,
                   textInputType: TextInputType.emailAddress,
@@ -63,7 +109,7 @@ class SignupView extends StatelessWidget {
                 const SizedBox(height: 20),
                 // address Input
                 TextFormGlobal(
-                  controller: emailController,
+                  controller: _addressController,
                   text: 'Address',
                   obscure: false,
                   textInputType: TextInputType.emailAddress,
@@ -71,7 +117,7 @@ class SignupView extends StatelessWidget {
                 const SizedBox(height: 20),
                 // Password input
                 TextFormGlobal(
-                  controller: passwordController,
+                  controller: _passwordController,
                   text: 'Password',
                   textInputType: TextInputType.text,
                   obscure: true,
@@ -79,7 +125,7 @@ class SignupView extends StatelessWidget {
                 const SizedBox(height: 20),
                 // Confirm Password input
                 TextFormGlobal(
-                  controller: confirmPasswordController,
+                  controller: _confirmPasswordController,
                   text: 'Confirm Password',
                   textInputType: TextInputType.text,
                   obscure: true,
@@ -93,12 +139,7 @@ class SignupView extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                LoginView()), // Navigate to the LoginView
-                      );
+                      _registerUserWithEmailAndPassword();
                     },
                     child: const Text(
                       "Already have an account? Sign in",
