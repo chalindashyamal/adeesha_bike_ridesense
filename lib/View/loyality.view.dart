@@ -19,6 +19,7 @@ class _LoyalityViewState extends State<LoyalityView> {
 
   bool isValidForm = false;
    final _formKey = GlobalKey<FormState>();
+   String points = "Loading...";
 
    Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -30,6 +31,7 @@ class _LoyalityViewState extends State<LoyalityView> {
   void initState() {
     super.initState();
     getUserData();
+    fetchPoints();
   }
 
   Future<void> getUserData() async {
@@ -41,15 +43,14 @@ class _LoyalityViewState extends State<LoyalityView> {
       });
     }
   }
-  DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
+  
+  Future<Map<String, dynamic>?> fetchUserData(User user) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
             .instance
             .collection('users')
             .doc(user.uid)
             .get();
-  Future<Map<String, dynamic>?> fetchUserData(User user) async {
-    try {
-      
-
       if (userData.exists) {
         return userData.data();
       } else {
@@ -63,19 +64,15 @@ class _LoyalityViewState extends State<LoyalityView> {
     }
   }
 
-  String points = "Loading..."; // Initialize with loading message
-
-  @override
-  void initState() {
-    super.initState();
-    fetchPoints();
-  }
 
   Future<void> fetchPoints() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       try {
-        DocumentSnapshot<Map<String, dynamic>> pointsSnapshot = userData
+        DocumentSnapshot<Map<String, dynamic>> pointsSnapshot = await FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(currentUser.uid)
             .collection('points')
             .doc('PsVVqV0JVqqz79HI8KBf')
             .get();
