@@ -21,7 +21,7 @@ class _LoyalityViewState extends State<LoyalityView> {
    final _formKey = GlobalKey<FormState>();
    String points = "Loading...";
 
-   final int withdrawValue = 0;
+   int withdrawValue = 0;
 
    Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -197,7 +197,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                 child: TextFormField(textAlign: TextAlign.center,
                 enabled: false,
                   decoration: InputDecoration(
-                    labelText: withdrawValue,
+                    labelText: withdrawValue.toString(),
                   ),
                   validator: (inputValue){
                     if(inputValue!.isEmpty){
