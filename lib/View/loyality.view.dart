@@ -1,7 +1,11 @@
 
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../components/flutter_toast.dart';
 import '../components/linechart.dart';
 
 class LoyalityView extends StatefulWidget {
