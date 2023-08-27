@@ -8,8 +8,26 @@ import '../utils/global.colors.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool isRememberMe = false;
+
+  Future login() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _email.text,
+        password: _password.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        AppToastmsg.appToastMeassage('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        AppToastmsg.appToastMeassage('Wrong password provided for that user.');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +77,34 @@ class LoginView extends StatelessWidget {
                     textInputType: TextInputType.text,
                     obscure: true),
                 const SizedBox(height: 10),
-                const ButtonGlobal(),
+                InkWell(
+                  onTap:  () {
+                    if (_formKey.currentState!.validate()) {
+                      login();
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: GlobalColor.mainColor,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                );
                 const SizedBox(height: 25),
                 // const SocialLogin(),
                 const SizedBox(height: 220),

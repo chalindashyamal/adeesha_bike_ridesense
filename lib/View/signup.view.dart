@@ -168,7 +168,12 @@ class SignupView extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
                     onTap: () {
-                      _registerUserWithEmailAndPassword();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                LoginView()), // Navigate to the LoginView
+                      );
                     },
                     child: const Text(
                       "Already have an account? Sign in",
