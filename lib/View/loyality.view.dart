@@ -15,6 +15,10 @@ class _LoyalityViewState extends State<LoyalityView> {
   bool isValidForm = false;
    final _formKey = GlobalKey<FormState>();
 
+   Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +44,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                     ],
                   )
                 ],
+                Icon(Icons.user)
               ),
             ),
             Padding(
@@ -65,7 +70,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         Row(
                           children: [
                             Icon(Icons.star,color: Colors.yellow),
-                             Icon(Icons.star,color: Colors.yellow),
+                            Icon(Icons.star,color: Colors.yellow),
                             Icon(Icons.star),
                             Icon(Icons.star),
                             Icon(Icons.star),
