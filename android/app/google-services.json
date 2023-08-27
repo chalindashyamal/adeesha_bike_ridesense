@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "323582705102",
+    "project_id": "bike-app-iot",
+    "storage_bucket": "bike-app-iot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323582705102:android:9fea7f32d171552fdb3f9f",
+        "android_client_info": {
+          "package_name": "com.example.adeesha_bike_ridesense"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323582705102-9qs5k1bi4i49qe3bhektelo8c4nu0om3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBvJSe5D26tB5LpEh-7koRCe-_x-YL4_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323582705102-9qs5k1bi4i49qe3bhektelo8c4nu0om3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "323582705102-6n8fce6tamj4b47qc7tb2fln03s279j6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ridesenseApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,15 +1,19 @@
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-import 'View/history.dart';
-import 'View/history/lasttrip.dart';
-import 'View/login.view.dart';
-import 'View/loyality.view.dart';
-import 'View/splash.veiw.dart';
-import 'View/static.dart';
 
-void main() {
+import 'View/login.view.dart';
+import 'firebase_options.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
        // useMaterial3: true,
       ),
-      home: StaticChart(),
+      home: LoginView(),
     );
   }
 }
