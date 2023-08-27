@@ -35,12 +35,10 @@ class _LoyalityViewState extends State<LoyalityView> {
   Future<void> getUserData() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      Map<String, dynamic>? userData = await fetchUserData(currentUser);
-      if (userData != null) { 
-        setState(() {
-          userDataString = jsonEncode(userData);
-        });
-      }
+      Map<String, dynamic>? fetchedUserData = await fetchUserData(currentUser);
+      setState(() {
+        userData = fetchedUserData;
+      });
     }
   }
 
@@ -68,9 +66,8 @@ class _LoyalityViewState extends State<LoyalityView> {
   @override
   Widget build(BuildContext context) {
 
-    Map<String, dynamic> userData = jsonDecode(userDataString);
-    String userName = userData['username'] ?? 'N/A';
-    String email = userData['email'] ?? 'N/A';
+    String userName = userData?['username'] ?? 'N/A';
+    String email = userData?['email'] ?? 'N/A';
     String address = userData['address'] ?? 'N/A';
     
     return Scaffold(
