@@ -85,14 +85,10 @@ class _LoyalityViewState extends State<LoyalityView> {
             points = pointsSnapshot.data()?['value'] ?? "Value not found";
           });
         } else {
-          setState(() {
-            points = "Document not found";
-          });
+          print("Document not found");
         }
       } catch (e) {
-        setState(() {
-          points = "Failed to fetch points: $e";
-        });
+        print("Failed to fetch points: $e");
       }
     }
   }
