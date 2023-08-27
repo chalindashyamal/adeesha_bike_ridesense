@@ -1,10 +1,6 @@
-
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../components/flutter_toast.dart';
 import '../components/linechart.dart';
 
@@ -134,7 +130,9 @@ class _LoyalityViewState extends State<LoyalityView> {
     String address = userData?['address'] ?? 'N/A';
     
     return Scaffold(
-      appBar: AppBar(),
+     appBar: AppBar(
+        title: Text('Loyality Point'),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -142,21 +140,21 @@ class _LoyalityViewState extends State<LoyalityView> {
               Container(
                 child: Row(
                   children: [
-                    Icon(Icons.person_outline, color: Colors.blue,size: 100, ),
+                    const Icon(Icons.person_outline, color: Colors.blue,size: 100, ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text(userName,style: TextStyle(),),
-                            Icon(Icons.beenhere,color: Colors.blue,)
+                            Text(userName,style: const TextStyle(),),
+                            const Icon(Icons.beenhere,color: Colors.blue,)
                           ],
                         ),
-                        Text(email,style: TextStyle(),),
-                        Text(address,style: TextStyle(),),
+                        Text(email,style: const TextStyle(),),
+                        Text(address,style: const TextStyle(),),
                       ],
                     ),
-                    GestureDetector(child: Text("log out"),
+                    GestureDetector(child: const Text("log out"),
                     onTap: signOut,
                     )
                   ],
@@ -165,7 +163,7 @@ class _LoyalityViewState extends State<LoyalityView> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(width: 1.0, color: Colors.grey)
@@ -179,10 +177,10 @@ class _LoyalityViewState extends State<LoyalityView> {
                           Row(
                             children: [
                               Text(points.toString()),
-                              Text("Points"),
+                              const Text("Points"),
                             ],
                           ),
-                          Row(
+                          const Row(
                             children: [
                               Icon(Icons.star,color: Colors.yellow),
                                Icon(Icons.star,color: Colors.yellow),
@@ -193,7 +191,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                           )
                         ],
                       ),
-                      Column(
+                      const Column(
                         children: [
                           Row(
                             children: [
@@ -215,7 +213,7 @@ class _LoyalityViewState extends State<LoyalityView> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: TextFormField(textAlign: TextAlign.center,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Enter Mobile Number"
                   ),
                   validator: (inputValue){
@@ -250,32 +248,33 @@ class _LoyalityViewState extends State<LoyalityView> {
                         withdrawValue = 20;
                     });
                   
-              }, child: Text("20"),
+              }, child: const Text("20"),
               ),
               ElevatedButton(
                 onPressed: (){
                   setState(() {
                       withdrawValue = 50;
                   });
-              }, child: Text("50"),
+              }, child: const Text("50"),
               ),
               ElevatedButton(
                 onPressed: (){
                   setState(() {
                       withdrawValue = 100;
                   });
-              }, child: Text("100"),
+              }, child: const Text("100"),
               ),
                 ],
               ),
               ElevatedButton(
                 onPressed: (){
                  incrementQuantity(-withdrawValue);
-              }, child: Text("Submit")),
+              }, child: const Text("Submit")),
             ],
           )
           ),
-              LineChartSample2()    ],
+              const LineChartSample2()    
+            ],
           ),
         ),
       ),

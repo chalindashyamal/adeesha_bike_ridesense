@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 
-class LastTripCard extends StatefulWidget {
-  const LastTripCard({super.key});
+class EvidenceCard extends StatefulWidget {
+  const EvidenceCard({super.key});
 
   @override
-  State<LastTripCard> createState() => _LastTripCardState();
+  State<EvidenceCard> createState() => _EvidenceCardState();
 }
 
-class _LastTripCardState extends State<LastTripCard> {
+class _EvidenceCardState extends State<EvidenceCard> {
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -1,18 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:intl/intl.dart';
+import '../components/flutter_toast.dart';
+import 'lasttrip.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
 
   @override
+  
   State<History> createState() => _HistoryState();
 }
-
+  
 class _HistoryState extends State<History> {
-  List<Module> item = [];
+
+  final firestoreInstance = FirebaseFirestore.instance;
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  List<Module> trips = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchModulesData();
+  }
+
+  void fetchModulesData() async {
+    try {
+      final snapshot = await firestoreInstance
+          .collection("users")
+          .doc(user!.uid)
+          .collection("trips")
+          .get();
+
+      trips = snapshot.docs.map((doc) {
+        Timestamp timestamp = doc.get("date");
+        DateTime dateTime = timestamp.toDate();
+        return Module(
+            tripID: doc.id,
+            date: dateTime
+            );
+      }).toList();
+    } catch (e) {
+      AppToastmsg.appToastMeassage("Error fetching modules data: $e");
+      print(e);
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
    return Scaffold(
+    appBar: AppBar(
+        title: Text('History'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -21,14 +63,14 @@ class _HistoryState extends State<History> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
              children: [
                Row(
-                 children: [ SizedBox(height: 100),
+                 children: [ const SizedBox(height: 100),
                    Container(
                      width: 13,
                      height:13,
                      color: Colors.red,
                    ),
-                   Padding(
-                     padding: const EdgeInsets.only(left: 5),
+                   const Padding(
+                     padding: EdgeInsets.only(left: 5),
                      child: Text("High risk"),
                    )
                  ],
@@ -40,8 +82,8 @@ class _HistoryState extends State<History> {
                      height:13,
                      color: Colors.yellow,
                    ),
-                   Padding(
-                     padding: const EdgeInsets.only(left: 5),
+                   const Padding(
+                     padding: EdgeInsets.only(left: 5),
                      child: Text("Low risk"),
                    )
                  ],
@@ -52,9 +94,73 @@ class _HistoryState extends State<History> {
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 4,
+                itemCount: trips.length,
                 itemBuilder: (context, index) {
-                  return HistoryCard();
+                  String formattedDate = DateFormat('yyyy-MM-dd').format(trips[index].date);
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(width: 1.0, color: Colors.grey)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(          
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(width: 1.0, color: Colors.grey)
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Align(alignment: Alignment.center,child: Text("01")),
+                                  ),
+                                ),
+                                const SizedBox(width: 10,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(formattedDate, style: const TextStyle(fontSize: 15 ),),
+                                const Text("Colombo to Kandy", style: TextStyle(fontSize:15, fontWeight: FontWeight.bold),)
+                              ],
+                            )
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                CircularPercentIndicator(
+                                  radius: 25.0,
+                                  lineWidth: 7.0,
+                                  animation: true,
+                                  percent: 0.7,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: Colors.red,
+                                  backgroundColor: Colors.yellow,
+                                ),
+                                const SizedBox(height: 5),
+                                ElevatedButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LastTrip(tripid: trips[index].tripID),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text("See more"),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10,)
+                    ],
+                  );
                 },
               ),
             ),
@@ -67,95 +173,10 @@ class _HistoryState extends State<History> {
 }
 
 class Module {
-  final String remindID;
-  final String title;
-  final String note;
-  final String date;
-  final String time;
-  final String remind;
+  final String tripID;
+  final DateTime date;
   Module({
-    required this.remindID,
-    required this.title,
-    required this.note,
+    required this.tripID,
     required this.date,
-    required this.time,
-    required this.remind,
   });
-}
-
-
-
-
-class HistoryCard extends StatefulWidget {
-  const HistoryCard({super.key});
-
-  @override
-  State<HistoryCard> createState() => _HistoryCardState();
-}
-
-class _HistoryCardState extends State<HistoryCard> {
-  final DateTime _selectedDate = DateTime.now();
-  @override
-  Widget build(BuildContext context) {
-    final TextEditingController _dateController = TextEditingController(
-      text: '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
-    );
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 1.0, color: Colors.grey)
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(          
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(width: 1.0, color: Colors.grey)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Align(alignment: Alignment.center,child: Text("01")),
-                    ),
-                  ),
-                  SizedBox(width: 10,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_dateController.text, style: TextStyle(fontSize: 15 ),),
-                  Text("Colombo to Kandy", style: TextStyle(fontSize:15, fontWeight: FontWeight.bold),)
-                ],
-              )
-                ],
-              ),
-              Column(
-                children: [
-                  new CircularPercentIndicator(
-                    radius: 25.0,
-                    lineWidth: 7.0,
-                    animation: true,
-                    percent: 0.7,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: Colors.red,
-                    backgroundColor: Colors.yellow,
-                  ),
-                  SizedBox(height: 5),
-                  ElevatedButton(
-                    onPressed: (){},
-                    child: Text("See more"),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-        SizedBox(height: 10,)
-      ],
-    );
-  }
 }

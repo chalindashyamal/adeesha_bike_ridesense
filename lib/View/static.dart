@@ -13,17 +13,20 @@ class _StaticChartState extends State<StaticChart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Statics'),
+      ),
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 20),
-            Text("DAY",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
+            const SizedBox(height: 20),
+            const Text("DAY",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
              CircularPercentIndicator(
               radius: 50.0,
               lineWidth: 12.0,
               animation: true,
               percent: 0.7,
-              center: Text(
+              center: const Text(
                 "70.0%",
                 style:
                      TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
@@ -31,11 +34,11 @@ class _StaticChartState extends State<StaticChart> {
               circularStrokeCap: CircularStrokeCap.butt,
               progressColor: Colors.blue,
             ),
-            SizedBox(height: 30),
-            Text("WEEK",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
-            LineChartSample2(),
-            SizedBox(height: 20),
-            Text("MONTH",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
+            const SizedBox(height: 30),
+            const Text("WEEK",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
+            const LineChartSample2(),
+            const SizedBox(height: 20),
+            const Text("MONTH",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
             BarChartSample2(),  
           ],
         ),
@@ -137,7 +140,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   LineChartData mainData() {
     return LineChartData(
       borderData: FlBorderData(
-        border: Border(
+        border: const Border(
             left: BorderSide(width: 1),
             bottom: BorderSide(width: 0),
           ),
@@ -148,7 +151,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingVerticalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.transparent,
             strokeWidth: 1,
           );
@@ -156,10 +159,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
@@ -196,10 +199,10 @@ class _LineChartSample2State extends State<LineChartSample2> {
             FlSpot(10, 3),
           ],
           isCurved: false,
-          color: Color.fromARGB(255, 63, 206, 117),
+          color: const Color.fromARGB(255, 63, 206, 117),
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: true,
           ),
         ),
@@ -217,7 +220,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           color: Colors.blue,
           barWidth: 2,
           isStrokeCapRound: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: true,
           ),
         ),
@@ -289,13 +292,13 @@ class BarChartSample2State extends State<BarChartSample2> {
                         reservedSize: 42,
                       ),
                     ),
-                    topTitles: AxisTitles(
+                    topTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: false,
                         
                       ),
                     ),
-                    rightTitles: AxisTitles(
+                    rightTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: false,
                         
@@ -312,7 +315,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                   ),
                   
                   borderData: FlBorderData(
-                      border: Border(
+                      border: const Border(
                           left: BorderSide(width: 1),
                           bottom: BorderSide(width: 0),
                         ),
@@ -322,7 +325,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                     show: true,
                     drawVerticalLine: true,
                     getDrawingVerticalLine: (value) {
-                      return FlLine(
+                      return const FlLine(
                         color: Colors.transparent,
                         strokeWidth: 1,
                       );
@@ -397,7 +400,7 @@ class BarChartSample2State extends State<BarChartSample2> {
         ),
         BarChartRodData(
           toY: y2,
-          color: Color.fromARGB(255, 63, 206, 117),
+          color: const Color.fromARGB(255, 63, 206, 117),
           width: width,
           borderRadius: BorderRadius.circular(0)
         ),
