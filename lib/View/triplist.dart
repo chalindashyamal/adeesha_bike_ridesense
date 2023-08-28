@@ -2,63 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import '../components/flutter_toast.dart';
+
 import 'Evidence/Evidence.dart';
 import 'map.dart';
 
-class LastTrip extends StatefulWidget {
-   const LastTrip({super.key});
+class Triplist extends StatefulWidget {
+  final String tripid;
+   const Triplist({
+    super.key,
+    required this.tripid,
+    });
 
 
   @override
-  State<LastTrip> createState() => _LastTripState();
+  State<Triplist> createState() => _TriplistState();
 }
 
-class _LastTripState extends State<LastTrip> {
-final firestoreInstance = FirebaseFirestore.instance;
-  final User? user = FirebaseAuth.instance.currentUser;
-
-  String? latestTripID; 
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchLatestTrip();
-  }
-
-  Future<void> fetchLatestTrip() async {
-    try {
-      final snapshot = await firestoreInstance
-          .collection("users")
-          .doc(user!.uid)
-          .collection("trips")
-          .orderBy("date", descending: true)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        final doc = snapshot.docs.first;
-        setState(() {
-          latestTripID = doc.id; 
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          latestTripID = null; 
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      AppToastmsg.appToastMeassage("Error fetching latest trip data: $e");
-      print(e);
-    }
-  }
-
+class _TriplistState extends State<Triplist> {
 
 
   @override
   Widget build(BuildContext context) {
+    final firestoreInstance = FirebaseFirestore.instance;
+  final User? user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
         appBar: AppBar(
             title: const Text('Last Trip/Dashboard'),
@@ -68,11 +35,11 @@ final firestoreInstance = FirebaseFirestore.instance;
             .collection("users")
             .doc(user!.uid)
             .collection("trips")
-            .doc(latestTripID)
+            .doc(widget.tripid)
             .collection("incident")
             .get(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting || isLoading == true) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator()); 
               }
 
@@ -199,7 +166,7 @@ final firestoreInstance = FirebaseFirestore.instance;
                               Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Evidence(evidenceTrip: latestTripID.toString()),
+                                builder: (context) => Evidence(evidenceTrip: widget.tripid.toString()),
                               ),
                             );
                             }, child: const Text("Evidence")),
@@ -208,7 +175,7 @@ final firestoreInstance = FirebaseFirestore.instance;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MapScreen(mapid: latestTripID.toString()),
+                          builder: (context) => MapScreen(mapid: widget.tripid),
                         ),
                       );
                     },
@@ -252,15 +219,15 @@ final firestoreInstance = FirebaseFirestore.instance;
 }
 
   double calculateAngleRisk(int angle, double speed) {
-  if (speed <= 10.0 && angle <= 2) { 
+  if (speed <= 10.0 && angle <= 2) { // Make sure to use 0.0 instead of 0
     return 0.0;
-  } else if (speed <= 10.0 && angle <= 18) { 
+  } else if (speed <= 10.0 && angle <= 18) { // Make sure to use 0.0 instead of 0
     return 20.0;
-  } else if (speed <= 10.0 && angle <= 36) { 
+  } else if (speed <= 10.0 && angle <= 36) { // Make sure to use 0.0 instead of 0
     return 40.0;
-  } else if (speed <= 10.0 && angle <= 54) { 
+  } else if (speed <= 10.0 && angle <= 54) { // Make sure to use 0.0 instead of 0
     return 60.0;
-  } else if (speed <= 10.0 && angle <= 72) { 
+  } else if (speed <= 10.0 && angle <= 72) { // Make sure to use 0.0 instead of 0
     return 80.0;
   } else if (speed <= 10.0) {
     return 0.0;
@@ -269,5 +236,3 @@ final firestoreInstance = FirebaseFirestore.instance;
   }
 }
 }
-
-

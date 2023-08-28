@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>GMSApiKey</key>
+    <string>AIzaSyC92GVBqSDBFVi1W_uGuIBLfvnkj51gPXc</string>
 	<key>CFBundleDisplayName</key>
 	<string>Adeesha Bike Ridesense</string>
 	<key>CFBundleExecutable</key>

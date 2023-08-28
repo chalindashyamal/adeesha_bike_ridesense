@@ -1,13 +1,12 @@
 import 'package:adeesha_bike_ridesense/View/signup.view.dart';
-
 import 'package:adeesha_bike_ridesense/View/widgets/text.form.global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../components/flutter_toast.dart';
 import '../utils/global.colors.dart';
 
 
+// ignore: must_be_immutable
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
 

@@ -1,11 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:intl/intl.dart';
-import '../components/flutter_toast.dart';
-import 'lasttrip.dart';
-import '../components/refresh.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'triplist.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -19,6 +17,7 @@ class _HistoryState extends State<History> {
   final User? user = FirebaseAuth.instance.currentUser;
 
   List<Module> trips = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -42,14 +41,14 @@ class _HistoryState extends State<History> {
           date: dateTime,
         );
       }).toList();
+
+      setState(() {
+        isLoading = false;
+      });
     } catch (e) {
       AppToastmsg.appToastMeassage("Error fetching modules data: $e");
       print(e);
     }
-  }
-
-  Future<void> _handleRefresh() async {
-    // Perform the refresh logic here
   }
 
   @override
@@ -58,13 +57,19 @@ class _HistoryState extends State<History> {
       appBar: AppBar(
         title: const Text('History'),
       ),
-      body: RefreshIndicator(
-        onRefresh: _handleRefresh,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(), // Show loading indicator
+            )
+          : trips.isEmpty
+              ? Center(
+                  child: Text('No trips available.'),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Row(
@@ -96,8 +101,7 @@ class _HistoryState extends State<History> {
                   ),
                 ],
               ),
-              SingleChildScrollView(
-                child: ListView.builder(
+                      ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: trips.length,
@@ -174,7 +178,7 @@ class _HistoryState extends State<History> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              LastTrip(tripid: trips[index].tripID),
+                                              Triplist(tripid: trips[index].tripID),
                                         ),
                                       );
                                     },
@@ -190,11 +194,9 @@ class _HistoryState extends State<History> {
                     );
                   },
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                    ],
+                  ),
+                ),
     );
   }
 }
@@ -208,3 +210,11 @@ class Module {
     required this.date,
   });
 }
+
+class AppToastmsg {
+  static void appToastMeassage(String message) {
+    // Implement your toast logic
+  }
+}
+
+

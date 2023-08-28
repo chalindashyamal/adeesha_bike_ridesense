@@ -131,7 +131,7 @@ class _LoyalityViewState extends State<LoyalityView> {
     
     return Scaffold(
      appBar: AppBar(
-        title: Text('Loyality Point'),
+        title: const Text('Loyality Point'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -154,8 +154,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         Text(address,style: const TextStyle(),),
                       ],
                     ),
-                    GestureDetector(child: const Text("log out"),
-                    onTap: signOut,
+                    GestureDetector(onTap: signOut,child: const Text("log out"),
                     )
                   ],
                 ),

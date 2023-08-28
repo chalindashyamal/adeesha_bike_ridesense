@@ -12,12 +12,22 @@ class SettingsApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Colors.black, // Set background color to black
+      ),
       home: SettingsPage(),
     );
   }
 }
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool isDarkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,17 +53,17 @@ class SettingsPage extends StatelessWidget {
                 value: false,
                 onChanged: (newValue) {
                   // Handle switch state changes
-                  // Example: You can update the state using setState in a StatefulWidget
                 },
               ),
             ),
             ListTile(
               title: Text('Dark Mode'),
               trailing: Switch(
-                value: false,
+                value: isDarkMode,
                 onChanged: (newValue) {
-                  // Handle switch state changes
-                  // Example: You can update the state using setState in a StatefulWidget
+                  setState(() {
+                    isDarkMode = newValue;
+                  });
                 },
               ),
             ),
@@ -70,14 +80,12 @@ class SettingsPage extends StatelessWidget {
               title: Text('Change Password'),
               onTap: () {
                 // Handle tap
-                // Example: Navigate to the password change screen
               },
             ),
             ListTile(
               title: Text('Sign Out'),
               onTap: () {
                 // Handle tap
-                // Example: Perform sign-out operation
               },
             ),
           ],

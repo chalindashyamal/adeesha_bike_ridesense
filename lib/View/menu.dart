@@ -5,7 +5,7 @@ import 'package:adeesha_bike_ridesense/View/static.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../components/refresh.dart';
+import 'lasttrip.dart';
 
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
@@ -34,7 +34,7 @@ class _MenuState extends State<Menu> {
   ];
 
   final pages = [
-    LastTripPage(), // Replace with actual pages or routes
+    LastTrip(), // Replace with actual pages or routes
     History(),
     StaticChart(),
     LoyalityView(),
@@ -118,19 +118,4 @@ class _MenuState extends State<Menu> {
   }
 }
 
-// Create separate pages or routes for each menu item
-class LastTripPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Last Trip'),
-      ),
-      body: const Center(
-        child: Text('Last Trip Page Content'),
-      ),
-    );
-  }
-}
 
-// Create other page classes similarly...
