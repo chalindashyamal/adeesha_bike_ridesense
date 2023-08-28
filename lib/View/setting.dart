@@ -40,18 +40,20 @@ class SettingsPage extends StatelessWidget {
             ListTile(
               title: Text('Notification Settings'),
               trailing: Switch(
-                value: false, // You can set the initial value here
+                value: false,
                 onChanged: (newValue) {
                   // Handle switch state changes
+                  // Example: You can update the state using setState in a StatefulWidget
                 },
               ),
             ),
             ListTile(
               title: Text('Dark Mode'),
               trailing: Switch(
-                value: false, // You can set the initial value here
+                value: false,
                 onChanged: (newValue) {
                   // Handle switch state changes
+                  // Example: You can update the state using setState in a StatefulWidget
                 },
               ),
             ),
@@ -68,12 +70,14 @@ class SettingsPage extends StatelessWidget {
               title: Text('Change Password'),
               onTap: () {
                 // Handle tap
+                // Example: Navigate to the password change screen
               },
             ),
             ListTile(
               title: Text('Sign Out'),
               onTap: () {
                 // Handle tap
+                // Example: Perform sign-out operation
               },
             ),
           ],

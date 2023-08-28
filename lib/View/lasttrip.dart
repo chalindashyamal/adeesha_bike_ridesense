@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'Evidence/Evidence.dart';
+import 'map.dart';
 
 class LastTrip extends StatefulWidget {
   final String tripid;
@@ -170,25 +171,33 @@ class _LastTripState extends State<LastTrip> {
                                   ),
                                 );
                                 }, child: const Text("Evidence")),
-                                ElevatedButton(onPressed: (){}, child: const Text("Map")),
-                            ],
-                        ),
-                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: averageRisk > 50 ? Text("Your ride is risk") : Text("Your ride is safe"),
-                        )
+                                              ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text("Map"),
+                      ),
                     ],
-                  );
-                },
-            );         
-        }
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: averageRisk > 50 ? Text("Your ride is risky") : Text("Your ride is safe"),
+                  )
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }
-}
-
-
-double prerisk(int angle, double speed) {
+  
+ double prerisk(int angle, double speed) {
   double speedRisk = calculateSpeedRisk(speed);
   double angleRisk = calculateAngleRisk(angle, speed);
   double overallRisk = (speedRisk + angleRisk) / 2;
@@ -196,7 +205,7 @@ double prerisk(int angle, double speed) {
   return overallRisk;
 }
 
-double calculateSpeedRisk(double speed) {
+ double calculateSpeedRisk(double speed) {
   if (speed <= 2) {
     return 0.0;
   } else if (speed <= 20) {
@@ -212,7 +221,7 @@ double calculateSpeedRisk(double speed) {
   }
 }
 
-double calculateAngleRisk(int angle, double speed) {
+  double calculateAngleRisk(int angle, double speed) {
   if (speed != 0.0 && angle <= 2) { // Make sure to use 0.0 instead of 0
     return 0.0;
   } else if (speed != 0.0 && angle <= 18) { // Make sure to use 0.0 instead of 0
@@ -228,4 +237,5 @@ double calculateAngleRisk(int angle, double speed) {
   } else {
     return 100.0;
   }
+}
 }

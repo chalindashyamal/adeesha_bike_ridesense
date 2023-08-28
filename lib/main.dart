@@ -8,6 +8,7 @@ import 'View/loyality.view.dart';
 import 'View/map.dart';
 import 'View/menu.dart';
 import 'View/setting.dart';
+import 'components/auth_state_changes.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
        // useMaterial3: true,
       ),
-      home:  History(),
+      home:  AuthChanges(),
     );
   }
 }
