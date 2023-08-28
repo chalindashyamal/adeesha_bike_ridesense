@@ -1,4 +1,4 @@
-import 'package:adeesha_bike_ridesense/View/widgets/signupbutton.global.dart';
+
 import 'package:adeesha_bike_ridesense/View/widgets/text.form.global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,13 +8,13 @@ import '../components/flutter_toast.dart';
 import '../utils/global.colors.dart';
 import 'login.view.dart';
 
-
 class SignupView extends StatelessWidget {
   SignupView({Key? key}) : super(key: key);
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
   Future<User?> _createUserWithEmailAndPassword(
@@ -37,11 +37,10 @@ class SignupView extends StatelessWidget {
     String address,
   ) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'username': username,
-        'email': email,
-        'address': address
-      });
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({'username': username, 'email': email, 'address': address});
     } catch (e) {
       // Handle any Firestore upload exceptions
       AppToastmsg.appToastMeassage('Failed to upload username: $e');
@@ -134,33 +133,33 @@ class SignupView extends StatelessWidget {
                   obscure: true,
                 ),
                 const SizedBox(height: 10),
-               InkWell(
-                onTap: () {
-                  // ignore: avoid_print
-                  _registerUserWithEmailAndPassword();
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: GlobalColor.mainColor,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
+                InkWell(
+                  onTap: () {
+                    // ignore: avoid_print
+                    _registerUserWithEmailAndPassword();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: GlobalColor.mainColor,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ),
                 const SizedBox(height: 25),
                 // const SocialSignup(),
                 const SizedBox(height: 50),

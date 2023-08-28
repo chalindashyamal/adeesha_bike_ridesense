@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import '../utils/global.colors.dart';
 import 'login.view.dart';
 
-
 class SplashView extends StatelessWidget {
   const SplashView({Key? key}) : super(key: key);
 

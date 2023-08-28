@@ -14,8 +14,7 @@ class StaticChart extends StatefulWidget {
 }
 
 class _StaticChartState extends State<StaticChart> {
-
-  String? latestTripID; 
+  String? latestTripID;
   bool isLoading = true;
 
   final firestoreInstance = FirebaseFirestore.instance;
@@ -40,12 +39,12 @@ class _StaticChartState extends State<StaticChart> {
       if (snapshot.docs.isNotEmpty) {
         final doc = snapshot.docs.first;
         setState(() {
-          latestTripID = doc.id; 
+          latestTripID = doc.id;
           isLoading = false;
         });
       } else {
         setState(() {
-          latestTripID = null; 
+          latestTripID = null;
           isLoading = false;
         });
       }
@@ -55,10 +54,6 @@ class _StaticChartState extends State<StaticChart> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,141 +61,155 @@ class _StaticChartState extends State<StaticChart> {
         title: const Text('Statics'),
       ),
       body: FutureBuilder<QuerySnapshot>(
-        future: firestoreInstance
-            .collection("users")
-            .doc(user!.uid)
-            .collection("trips")
-            .doc(latestTripID)
-            .collection("incident")
-            .get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting || latestTripID == true) {
-                return const Center(child: CircularProgressIndicator()); 
+          future: firestoreInstance
+              .collection("users")
+              .doc(user!.uid)
+              .collection("trips")
+              .doc(latestTripID)
+              .collection("incident")
+              .get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting ||
+                latestTripID == true) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+
+            List<QueryDocumentSnapshot> incidentList = snapshot.data!.docs;
+            double totalOverallRisk = 0.0;
+            int totalIncidents = incidentList.length;
+
+            for (var incidentSnapshot in incidentList) {
+              double speed = (incidentSnapshot['speed'] as num).toDouble();
+              int angle = incidentSnapshot['angle'];
+
+              double overallRisk = prerisk(angle, speed);
+              totalOverallRisk += overallRisk;
+            }
+
+            double minOverallRisk = double.infinity;
+            double maxOverallRisk = 0.0;
+
+            for (var incidentSnapshot in incidentList) {
+              double speed = (incidentSnapshot['speed'] as num).toDouble();
+              int angle = incidentSnapshot['angle'];
+
+              double overallRisk = prerisk(angle, speed);
+              if (overallRisk < minOverallRisk) {
+                minOverallRisk = overallRisk;
               }
-
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
+              if (overallRisk > maxOverallRisk) {
+                maxOverallRisk = overallRisk;
               }
+            }
 
-              List<QueryDocumentSnapshot> incidentList = snapshot.data!.docs;
-              double totalOverallRisk = 0.0;
-              int totalIncidents = incidentList.length;
+            double maxAngle = -1;
+            double maxAngleSpeed = 0.0;
 
-              for (var incidentSnapshot in incidentList) {
-                double speed = (incidentSnapshot['speed'] as num).toDouble();
-                int angle = incidentSnapshot['angle'];
+            for (var incidentSnapshot in incidentList) {
+              double speed = (incidentSnapshot['speed'] as num).toDouble();
+              int angle = incidentSnapshot['angle'];
 
-                double overallRisk = prerisk(angle, speed);
-                totalOverallRisk += overallRisk;
+              double overallRisk = prerisk(angle, speed);
+              if (angle.toDouble() > maxAngle) {
+                maxAngle = angle.toDouble();
+                maxAngleSpeed = speed;
               }
+            }
+            double averageRisk =
+                totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
 
-              double minOverallRisk = double.infinity; 
-              double maxOverallRisk = 0.0; 
-
-              for (var incidentSnapshot in incidentList) {
-                double speed = (incidentSnapshot['speed'] as num).toDouble();
-                int angle = incidentSnapshot['angle'];
-
-                double overallRisk = prerisk(angle, speed);
-                if (overallRisk < minOverallRisk) {
-                  minOverallRisk = overallRisk;
-                }
-                if (overallRisk > maxOverallRisk) {
-                  maxOverallRisk = overallRisk;
-                }
-              }
-
-              double maxAngle = -1;
-              double maxAngleSpeed = 0.0;
-
-              for (var incidentSnapshot in incidentList) {
-                double speed = (incidentSnapshot['speed'] as num).toDouble();
-                int angle = incidentSnapshot['angle'];
-
-                double overallRisk = prerisk(angle, speed);
-                if (angle.toDouble() > maxAngle) {
-                  maxAngle = angle.toDouble();
-                  maxAngleSpeed = speed;
-                }
-              }
-              double averageRisk = totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
-
-          return Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                const Text("DAY",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
-                 CircularPercentIndicator(
-                  radius: 50.0,
-                  lineWidth: 12.0,
-                  animation: true,
-                  percent: 0.7,
-                  center: Text(
-                    "$averageRisk%",
+            return Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  const Text(
+                    "DAY",
                     style:
-                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
                   ),
-                  circularStrokeCap: CircularStrokeCap.butt,
-                  progressColor: Colors.blue,
-                ),
-                const SizedBox(height: 30),
-                const Text("WEEK",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),),
-                const LineChartSample2(),
-                const SizedBox(height: 20),
-                const Text("MONTH",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
-                BarChartSample2(),  
-              ],
-            ),
-          );
-        }
-      ),
+                  CircularPercentIndicator(
+                    radius: 50.0,
+                    lineWidth: 12.0,
+                    animation: true,
+                    percent: 0.7,
+                    center: Text(
+                      "$averageRisk%",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15.0),
+                    ),
+                    circularStrokeCap: CircularStrokeCap.butt,
+                    progressColor: Colors.blue,
+                  ),
+                  const SizedBox(height: 30),
+                  const Text(
+                    "WEEK",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                  ),
+                  const LineChartSample2(),
+                  const SizedBox(height: 20),
+                  const Text("MONTH",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14.0)),
+                  BarChartSample2(),
+                ],
+              ),
+            );
+          }),
     );
   }
 
-
   double prerisk(int angle, double speed) {
-  double speedRisk = calculateSpeedRisk(speed);
-  double angleRisk = calculateAngleRisk(angle, speed);
-  double overallRisk = (speedRisk + angleRisk) / 2;
+    double speedRisk = calculateSpeedRisk(speed);
+    double angleRisk = calculateAngleRisk(angle, speed);
+    double overallRisk = (speedRisk + angleRisk) / 2;
 
-  return overallRisk;
-}
-
- double calculateSpeedRisk(double speed) {
-  if (speed <= 10) {
-    return 0.0;
-  } else if (speed <= 20) {
-    return 20.0;
-  } else if (speed <= 40) {
-    return 40.0;
-  } else if (speed <= 60) {
-    return 60.0;
-  } else if (speed <= 80) {
-    return 80.0;
-  } else {
-    return 100.0;
+    return overallRisk;
   }
-}
+
+  double calculateSpeedRisk(double speed) {
+    if (speed <= 10) {
+      return 0.0;
+    } else if (speed <= 20) {
+      return 20.0;
+    } else if (speed <= 40) {
+      return 40.0;
+    } else if (speed <= 60) {
+      return 60.0;
+    } else if (speed <= 80) {
+      return 80.0;
+    } else {
+      return 100.0;
+    }
+  }
 
   double calculateAngleRisk(int angle, double speed) {
-  if (speed <= 10.0 && angle <= 2) { // Make sure to use 0.0 instead of 0
-    return 0.0;
-  } else if (speed <= 10.0 && angle <= 18) { // Make sure to use 0.0 instead of 0
-    return 20.0;
-  } else if (speed <= 10.0 && angle <= 36) { // Make sure to use 0.0 instead of 0
-    return 40.0;
-  } else if (speed <= 10.0 && angle <= 54) { // Make sure to use 0.0 instead of 0
-    return 60.0;
-  } else if (speed <= 10.0 && angle <= 72) { // Make sure to use 0.0 instead of 0
-    return 80.0;
-  } else if (speed <= 10.0) {
-    return 0.0;
-  } else {
-    return 100.0;
+    if (speed <= 10.0 && angle <= 2) {
+      // Make sure to use 0.0 instead of 0
+      return 0.0;
+    } else if (speed <= 10.0 && angle <= 18) {
+      // Make sure to use 0.0 instead of 0
+      return 20.0;
+    } else if (speed <= 10.0 && angle <= 36) {
+      // Make sure to use 0.0 instead of 0
+      return 40.0;
+    } else if (speed <= 10.0 && angle <= 54) {
+      // Make sure to use 0.0 instead of 0
+      return 60.0;
+    } else if (speed <= 10.0 && angle <= 72) {
+      // Make sure to use 0.0 instead of 0
+      return 80.0;
+    } else if (speed <= 10.0) {
+      return 0.0;
+    } else {
+      return 100.0;
+    }
   }
 }
-}
-
 
 class LineChartSample2 extends StatefulWidget {
   const LineChartSample2({super.key});
@@ -210,7 +219,6 @@ class LineChartSample2 extends StatefulWidget {
 }
 
 class _LineChartSample2State extends State<LineChartSample2> {
-
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -223,7 +231,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           bottom: 12,
         ),
         child: LineChart(
-           mainData(),
+          mainData(),
         ),
       ),
     );
@@ -295,9 +303,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
     return LineChartData(
       borderData: FlBorderData(
         border: const Border(
-            left: BorderSide(width: 1),
-            bottom: BorderSide(width: 0),
-          ),
+          left: BorderSide(width: 1),
+          bottom: BorderSide(width: 0),
+        ),
       ),
       gridData: FlGridData(
         show: true,
@@ -336,7 +344,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
           ),
         ),
       ),
-
       minX: 0,
       maxX: 11,
       minY: 0,
@@ -383,10 +390,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
   }
 }
 
-
-
-
-
 class BarChartSample2 extends StatefulWidget {
   BarChartSample2({super.key});
 
@@ -432,7 +435,7 @@ class BarChartSample2State extends State<BarChartSample2> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[          
+          children: <Widget>[
             Expanded(
               child: BarChart(
                 BarChartData(
@@ -449,13 +452,11 @@ class BarChartSample2State extends State<BarChartSample2> {
                     topTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: false,
-                        
                       ),
                     ),
                     rightTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: false,
-                        
                       ),
                     ),
                     leftTitles: AxisTitles(
@@ -467,13 +468,12 @@ class BarChartSample2State extends State<BarChartSample2> {
                       ),
                     ),
                   ),
-                  
                   borderData: FlBorderData(
-                      border: const Border(
-                          left: BorderSide(width: 1),
-                          bottom: BorderSide(width: 0),
-                        ),
+                    border: const Border(
+                      left: BorderSide(width: 1),
+                      bottom: BorderSide(width: 0),
                     ),
+                  ),
                   barGroups: showingBarGroups,
                   gridData: FlGridData(
                     show: true,
@@ -547,22 +547,16 @@ class BarChartSample2State extends State<BarChartSample2> {
       x: x,
       barRods: [
         BarChartRodData(
-          toY: y1,
-          color: Colors.blue,
-          width: width,
-          borderRadius: BorderRadius.circular(0)
-        ),
+            toY: y1,
+            color: Colors.blue,
+            width: width,
+            borderRadius: BorderRadius.circular(0)),
         BarChartRodData(
-          toY: y2,
-          color: const Color.fromARGB(255, 63, 206, 117),
-          width: width,
-          borderRadius: BorderRadius.circular(0)
-        ),
+            toY: y2,
+            color: const Color.fromARGB(255, 63, 206, 117),
+            width: width,
+            borderRadius: BorderRadius.circular(0)),
       ],
     );
   }
-
-
-
-
 }

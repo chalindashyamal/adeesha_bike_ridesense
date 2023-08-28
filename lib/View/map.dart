@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../components/flutter_toast.dart';
+
 class MapScreen extends StatefulWidget {
   final String mapid;
   const MapScreen({Key? key, required this.mapid});
@@ -111,7 +112,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<List<LatLng>> getOptimizedRoute(List<LatLng> positions) async {
-    final apiKey = 'AIzaSyC92GVBqSDBFVi1W_uGuIBLfvnkj51gPXc'; // Replace with your API key
+    final apiKey =
+        'AIzaSyC92GVBqSDBFVi1W_uGuIBLfvnkj51gPXc'; // Replace with your API key
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/directions/json?origin=${positions[0].latitude},${positions[0].longitude}&destination=${positions.last.latitude},${positions.last.longitude}&waypoints=${getWaypointsString(positions)}&key=$apiKey'));
 
@@ -143,23 +145,21 @@ class _MapScreenState extends State<MapScreen> {
 
   String getWaypointsString(List<LatLng> positions) {
     final waypoints = positions.sublist(1, positions.length - 1);
-    return waypoints.map((latLng) => 'via:${latLng.latitude},${latLng.longitude}').join('|');
+    return waypoints
+        .map((latLng) => 'via:${latLng.latitude},${latLng.longitude}')
+        .join('|');
   }
 }
 
-
 class Module {
-
   final double ridespeed;
   final String incidentId;
   final double lat;
   final double lot;
   Module({
-    
     required this.incidentId,
     required this.ridespeed,
     required this.lat,
     required this.lot,
-
   });
 }

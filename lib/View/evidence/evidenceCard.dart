@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-
 class EvidenceCard extends StatefulWidget {
   const EvidenceCard({super.key});
 
@@ -17,9 +16,8 @@ class _EvidenceCardState extends State<EvidenceCard> {
         Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(width: 1.0, color: Colors.grey)
-          ),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(width: 1.0, color: Colors.grey)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -27,7 +25,11 @@ class _EvidenceCardState extends State<EvidenceCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Kandy to colombo"),
-                  Image.network("https://picsum.photos/170/100", width: 170, height: 100,)
+                  Image.network(
+                    "https://picsum.photos/170/100",
+                    width: 170,
+                    height: 100,
+                  )
                 ],
               ),
               Column(
@@ -40,15 +42,15 @@ class _EvidenceCardState extends State<EvidenceCard> {
                     percent: 0.7,
                     center: new Text(
                       "70.0%",
-                      style:
-                          new TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                      style: new TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15.0),
                     ),
                     footer: Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: new Text(
                         "Risk Ride",
-                        style:
-                            new TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14.0),
                       ),
                     ),
                     circularStrokeCap: CircularStrokeCap.butt,
@@ -59,7 +61,9 @@ class _EvidenceCardState extends State<EvidenceCard> {
             ],
           ),
         ),
-        SizedBox(height: 10,)
+        SizedBox(
+          height: 10,
+        )
       ],
     );
   }

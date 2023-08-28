@@ -12,14 +12,13 @@ class LoyalityView extends StatefulWidget {
 }
 
 class _LoyalityViewState extends State<LoyalityView> {
-
   bool isValidForm = false;
-   final _formKey = GlobalKey<FormState>();
-   int points = 0;
+  final _formKey = GlobalKey<FormState>();
+  int points = 0;
 
-   int withdrawValue = 0;
+  int withdrawValue = 0;
 
-   Future<void> signOut() async {
+  Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }
 
@@ -41,14 +40,14 @@ class _LoyalityViewState extends State<LoyalityView> {
       });
     }
   }
-  
+
   Future<Map<String, dynamic>?> fetchUserData(User user) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> userData = await FirebaseFirestore
-            .instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
+          .instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       if (userData.exists) {
         return userData.data();
       } else {
@@ -62,29 +61,24 @@ class _LoyalityViewState extends State<LoyalityView> {
     }
   }
 
-
   Future<void> fetchPoints() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       try {
-        DocumentSnapshot<Map<String, dynamic>> pointsSnapshot = await FirebaseFirestore
-            .instance
-            .collection('users')
-            .doc(currentUser.uid)
-            .collection('points')
-            .doc('PsVVqV0JVqqz79HI8KBf')
-            .get();
+        DocumentSnapshot<Map<String, dynamic>> pointsSnapshot =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(currentUser.uid)
+                .collection('points')
+                .doc('PsVVqV0JVqqz79HI8KBf')
+                .get();
 
         if (pointsSnapshot.exists) {
           setState(() {
             points = (pointsSnapshot.data()?['myvalue'] ?? "Value not found");
           });
-        } else {
-      
-        }
-      } catch (e) {
-        
-      }
+        } else {}
+      } catch (e) {}
     }
   }
 
@@ -92,8 +86,7 @@ class _LoyalityViewState extends State<LoyalityView> {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       try {
-        final DocumentReference  pointsDocRef = FirebaseFirestore
-            .instance
+        final DocumentReference pointsDocRef = FirebaseFirestore.instance
             .collection('users')
             .doc(currentUser.uid)
             .collection('points')
@@ -109,28 +102,26 @@ class _LoyalityViewState extends State<LoyalityView> {
   void incrementQuantity(int incVal) async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     try {
-        final DocumentReference  itemRef = FirebaseFirestore
-            .instance
-            .collection('users')
-            .doc(currentUser!.uid)
-            .collection('points')
-            .doc('PsVVqV0JVqqz79HI8KBf');
-        await itemRef.update({'myvalue': FieldValue.increment(incVal)});
-        fetchPoints();
-      } catch (e) {
-        print('Failed to update points: $e');
+      final DocumentReference itemRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection('points')
+          .doc('PsVVqV0JVqqz79HI8KBf');
+      await itemRef.update({'myvalue': FieldValue.increment(incVal)});
+      fetchPoints();
+    } catch (e) {
+      print('Failed to update points: $e');
     }
- }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     String userName = userData?['username'] ?? 'N/A';
     String email = userData?['email'] ?? 'N/A';
     String address = userData?['address'] ?? 'N/A';
-    
+
     return Scaffold(
-     appBar: AppBar(
+      appBar: AppBar(
         title: const Text('Loyality Point'),
       ),
       body: Center(
@@ -140,21 +131,39 @@ class _LoyalityViewState extends State<LoyalityView> {
               Container(
                 child: Row(
                   children: [
-                    const Icon(Icons.person_outline, color: Colors.blue,size: 100, ),
+                    const Icon(
+                      Icons.person_outline,
+                      color: Colors.blue,
+                      size: 100,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text(userName,style: const TextStyle(),),
-                            const Icon(Icons.beenhere,color: Colors.blue,)
+                            Text(
+                              userName,
+                              style: const TextStyle(),
+                            ),
+                            const Icon(
+                              Icons.beenhere,
+                              color: Colors.blue,
+                            )
                           ],
                         ),
-                        Text(email,style: const TextStyle(),),
-                        Text(address,style: const TextStyle(),),
+                        Text(
+                          email,
+                          style: const TextStyle(),
+                        ),
+                        Text(
+                          address,
+                          style: const TextStyle(),
+                        ),
                       ],
                     ),
-                    GestureDetector(onTap: signOut,child: const Text("log out"),
+                    GestureDetector(
+                      onTap: signOut,
+                      child: const Text("log out"),
                     )
                   ],
                 ),
@@ -164,9 +173,8 @@ class _LoyalityViewState extends State<LoyalityView> {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(width: 1.0, color: Colors.grey)
-                  ),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(width: 1.0, color: Colors.grey)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -181,8 +189,8 @@ class _LoyalityViewState extends State<LoyalityView> {
                           ),
                           const Row(
                             children: [
-                              Icon(Icons.star,color: Colors.yellow),
-                               Icon(Icons.star,color: Colors.yellow),
+                              Icon(Icons.star, color: Colors.yellow),
+                              Icon(Icons.star, color: Colors.yellow),
                               Icon(Icons.star),
                               Icon(Icons.star),
                               Icon(Icons.star),
@@ -194,7 +202,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         children: [
                           Row(
                             children: [
-                                Icon(Icons.star,color: Colors.yellow),
+                              Icon(Icons.star, color: Colors.yellow),
                               Text("200 star")
                             ],
                           )
@@ -205,74 +213,76 @@ class _LoyalityViewState extends State<LoyalityView> {
                 ),
               ),
               Form(
-          key: _formKey,
-          child: 
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: TextFormField(textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    hintText: "Enter Mobile Number"
-                  ),
-                  validator: (inputValue){
-                    if(inputValue!.isEmpty){
-                      return "Please enter";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: TextFormField(textAlign: TextAlign.center,
-                enabled: false,
-                  decoration: InputDecoration(
-                    labelText: withdrawValue.toString(),
-                  ),
-                  validator: (inputValue){
-                    if(inputValue!.isEmpty){
-                      return "Please Fill";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                onPressed: (){                 
-                    setState(() {
-                        withdrawValue = 20;
-                    });
-                  
-              }, child: const Text("20"),
-              ),
-              ElevatedButton(
-                onPressed: (){
-                  setState(() {
-                      withdrawValue = 50;
-                  });
-              }, child: const Text("50"),
-              ),
-              ElevatedButton(
-                onPressed: (){
-                  setState(() {
-                      withdrawValue = 100;
-                  });
-              }, child: const Text("100"),
-              ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: (){
-                 incrementQuantity(-withdrawValue);
-              }, child: const Text("Submit")),
-            ],
-          )
-          ),
-              const LineChartSample2()    
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextFormField(
+                          textAlign: TextAlign.center,
+                          decoration: const InputDecoration(
+                              hintText: "Enter Mobile Number"),
+                          validator: (inputValue) {
+                            if (inputValue!.isEmpty) {
+                              return "Please enter";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextFormField(
+                          textAlign: TextAlign.center,
+                          enabled: false,
+                          decoration: InputDecoration(
+                            labelText: withdrawValue.toString(),
+                          ),
+                          validator: (inputValue) {
+                            if (inputValue!.isEmpty) {
+                              return "Please Fill";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                withdrawValue = 20;
+                              });
+                            },
+                            child: const Text("20"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                withdrawValue = 50;
+                              });
+                            },
+                            child: const Text("50"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                withdrawValue = 100;
+                              });
+                            },
+                            child: const Text("100"),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            incrementQuantity(-withdrawValue);
+                          },
+                          child: const Text("Submit")),
+                    ],
+                  )),
+              const LineChartSample2()
             ],
           ),
         ),

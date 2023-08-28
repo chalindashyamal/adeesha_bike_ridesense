@@ -70,130 +70,130 @@ class _HistoryState extends State<History> {
                   child: Column(
                     children: [
                       Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      const SizedBox(height: 100),
-                      Container(
-                        width: 13,
-                        height: 13,
-                        color: Colors.red,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text("High risk"),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 13,
-                        height: 13,
-                        color: Colors.yellow,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Text("Low risk"),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-                      ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: trips.length,
-                  itemBuilder: (context, index) {
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(trips[index].date);
-                    return Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  width: 1.0, color: Colors.grey)),
-                          child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(50),
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: Colors.grey)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text("01")),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        formattedDate,
-                                        style: const TextStyle(
-                                            fontSize: 15),
-                                      ),
-                                      const Text(
-                                        "Colombo to Kandy",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight:
-                                                FontWeight.bold),
-                                      )
-                                    ],
-                                  )
-                                ],
+                              const SizedBox(height: 100),
+                              Container(
+                                width: 13,
+                                height: 13,
+                                color: Colors.red,
                               ),
-                              Column(
-                                children: [
-                                  CircularPercentIndicator(
-                                    radius: 25.0,
-                                    lineWidth: 7.0,
-                                    animation: true,
-                                    percent: 0.7,
-                                    circularStrokeCap:
-                                        CircularStrokeCap.round,
-                                    progressColor: Colors.red,
-                                    backgroundColor: Colors.yellow,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              Triplist(tripid: trips[index].tripID),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text("See more"),
-                                  )
-                                ],
+                              const Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Text("High risk"),
                               )
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 10)
-                      ],
-                    );
-                  },
-                ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 13,
+                                height: 13,
+                                color: Colors.yellow,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Text("Low risk"),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: trips.length,
+                        itemBuilder: (context, index) {
+                          String formattedDate = DateFormat('yyyy-MM-dd')
+                              .format(trips[index].date);
+                          return Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        width: 1.0, color: Colors.grey)),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              border: Border.all(
+                                                  width: 1.0,
+                                                  color: Colors.grey)),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text("01")),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              formattedDate,
+                                              style:
+                                                  const TextStyle(fontSize: 15),
+                                            ),
+                                            const Text(
+                                              "Colombo to Kandy",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        CircularPercentIndicator(
+                                          radius: 25.0,
+                                          lineWidth: 7.0,
+                                          animation: true,
+                                          percent: 0.7,
+                                          circularStrokeCap:
+                                              CircularStrokeCap.round,
+                                          progressColor: Colors.red,
+                                          backgroundColor: Colors.yellow,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Triplist(
+                                                    tripid:
+                                                        trips[index].tripID),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text("See more"),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10)
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -216,5 +216,3 @@ class AppToastmsg {
     // Implement your toast logic
   }
 }
-
-

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../components/flutter_toast.dart';
 import '../utils/global.colors.dart';
 
-
 // ignore: must_be_immutable
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
@@ -38,7 +37,8 @@ class LoginView extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(15.0),
-            child: Form(key: _formKey,
+            child: Form(
+              key: _formKey,
               child: Column(
                 children: [
                   const SizedBox(height: 20),
@@ -54,10 +54,9 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 50 ),
+                  const SizedBox(height: 50),
                   Text(
                     'Login to your account',
-              
                     style: TextStyle(
                         color: GlobalColor.textColor,
                         fontSize: 16,
@@ -80,7 +79,7 @@ class LoginView extends StatelessWidget {
                       obscure: true),
                   const SizedBox(height: 10),
                   InkWell(
-                    onTap:  () {
+                    onTap: () {
                       if (_formKey.currentState!.validate()) {
                         login();
                       }
