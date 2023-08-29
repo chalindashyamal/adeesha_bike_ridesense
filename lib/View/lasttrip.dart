@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:tuple/tuple.dart';
 import '../components/flutter_toast.dart';
+import '../components/riskcalc.dart';
 import 'Evidence/Evidence.dart';
 import 'map.dart';
 
@@ -79,48 +81,14 @@ class _LastTripState extends State<LastTrip> {
           }
 
           List<QueryDocumentSnapshot> incidentList = snapshot.data!.docs;
-          double totalOverallRisk = 0.0;
-          int totalIncidents = incidentList.length;
+          int totalIncidents = incidentList.length;        
+          double totalOverallRisk = RiskCalculator.calculateOverallRisk(incidentList);
+          double minOverallRisk = RiskCalculator.calculateMinOverallRisk(incidentList);
+          double maxOverallRisk = RiskCalculator.calculateMaxOverallRisk(incidentList);
+          Tuple2<double, double> maxAngleMetrics = RiskCalculator.calculateMaxAngleMetrics(incidentList);
+          double averageRisk = totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
+          double maxAngleSpeed = RiskCalculator.maxAngleSpeed(incidentList);
 
-          for (var incidentSnapshot in incidentList) {
-            double speed = (incidentSnapshot['speed'] as num).toDouble();
-            int angle = incidentSnapshot['angle'];
-
-            double overallRisk = prerisk(angle, speed);
-            totalOverallRisk += overallRisk;
-          }
-
-          double minOverallRisk = double.infinity;
-          double maxOverallRisk = 0.0;
-
-          for (var incidentSnapshot in incidentList) {
-            double speed = (incidentSnapshot['speed'] as num).toDouble();
-            int angle = incidentSnapshot['angle'];
-
-            double overallRisk = prerisk(angle, speed);
-            if (overallRisk < minOverallRisk) {
-              minOverallRisk = overallRisk;
-            }
-            if (overallRisk > maxOverallRisk) {
-              maxOverallRisk = overallRisk;
-            }
-          }
-
-          double maxAngle = -1;
-          double maxAngleSpeed = 0.0;
-
-          for (var incidentSnapshot in incidentList) {
-            double speed = (incidentSnapshot['speed'] as num).toDouble();
-            int angle = incidentSnapshot['angle'];
-
-            double overallRisk = prerisk(angle, speed);
-            if (angle.toDouble() > maxAngle) {
-              maxAngle = angle.toDouble();
-              maxAngleSpeed = speed;
-            }
-          }
-          double averageRisk =
-              totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
           return Column(
             children: [
               const Padding(

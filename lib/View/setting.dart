@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(SettingsApp());
@@ -79,7 +80,14 @@ class _SettingsPageState extends State<SettingsPage> {
             ListTile(
               title: Text('Change Password'),
               onTap: () {
-                // Handle tap
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return PasswordResetDialog(
+                      mainContext: context, // Pass the context here
+                    );
+                  },
+                );
               },
             ),
             ListTile(
@@ -90,6 +98,70 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PasswordResetDialog extends StatefulWidget {
+  final BuildContext mainContext; // Add this field
+
+  PasswordResetDialog({required this.mainContext}); // Constructor
+
+  @override
+  _PasswordResetDialogState createState() => _PasswordResetDialogState();
+}
+
+class _PasswordResetDialogState extends State<PasswordResetDialog> {
+  final TextEditingController _emailController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  bool _isLoading = false;
+
+  void _resetPassword() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.sendPasswordResetEmail(email: _emailController.text);
+      Navigator.pop(context);
+      // Show success message
+      ScaffoldMessenger.of(widget.mainContext).showSnackBar(SnackBar(
+        content: Text('Password reset email sent.'),
+      ));
+    } catch (e) {
+      print('Error sending password reset email: $e');
+      // Show error message
+      ScaffoldMessenger.of(widget.mainContext).showSnackBar(SnackBar(
+        content: Text('Error sending password reset email.'),
+      ));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Reset Password'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              labelText: 'Email',
+            ),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _isLoading ? null : _resetPassword,
+            child: _isLoading ? CircularProgressIndicator() : Text('Reset Password'),
+          ),
+        ],
       ),
     );
   }

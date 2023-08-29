@@ -1,8 +1,6 @@
-import 'package:adeesha_bike_ridesense/View/loyality.view.dart';
 import 'package:adeesha_bike_ridesense/View/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../View/login.view.dart';
 
 

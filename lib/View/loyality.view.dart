@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../components/flutter_toast.dart';
 import '../components/linechart.dart';
+
 
 class LoyalityView extends StatefulWidget {
   const LoyalityView({super.key});
@@ -78,6 +80,7 @@ class _LoyalityViewState extends State<LoyalityView> {
             points = (pointsSnapshot.data()?['myvalue'] ?? "Value not found");
           });
         } else {}
+      // ignore: empty_catches
       } catch (e) {}
     }
   }
@@ -92,7 +95,7 @@ class _LoyalityViewState extends State<LoyalityView> {
             .collection('points')
             .doc('PsVVqV0JVqqz79HI8KBf');
         await pointsDocRef.update({'myvalue': FieldValue.increment(incVal)});
-        fetchPoints(); // Fetch and update the local points after the update
+        fetchPoints(); 
       } catch (e) {
         print('Failed to update points: $e');
       }
@@ -111,6 +114,37 @@ class _LoyalityViewState extends State<LoyalityView> {
       fetchPoints();
     } catch (e) {
       print('Failed to update points: $e');
+    }
+  }
+
+
+
+
+  int calculatePoints(double riskPercentage) {
+    if (riskPercentage == 0) {
+      return 50;
+    } else if (riskPercentage <= 10) {
+      return 40;
+    } else if (riskPercentage <= 20) {
+      return 30;
+    } else if (riskPercentage <= 30) {
+      return 20;
+    } else if (riskPercentage <= 40) {
+      return 10;
+    } else if (riskPercentage == 50) {
+      return 5;
+    } else if (riskPercentage == 60) {
+      return -10;
+    } else if (riskPercentage == 70) {
+      return -20;
+    } else if (riskPercentage == 80) {
+      return -30;
+    } else if (riskPercentage == 90) {
+      return -40;
+    } else if (riskPercentage == 100) {
+      return -50;
+    } else {
+      return 0;
     }
   }
 
