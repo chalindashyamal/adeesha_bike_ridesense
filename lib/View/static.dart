@@ -1,3 +1,4 @@
+import 'package:adeesha_bike_ridesense/components/riskcalc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -70,6 +71,7 @@ class _StaticChartState extends State<StaticChart> {
               .get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting ||
+                // ignore: unrelated_type_equality_checks
                 latestTripID == true) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -79,48 +81,10 @@ class _StaticChartState extends State<StaticChart> {
             }
 
             List<QueryDocumentSnapshot> incidentList = snapshot.data!.docs;
-            double totalOverallRisk = 0.0;
-            int totalIncidents = incidentList.length;
+            int totalIncidents = incidentList.length;        
+            double totalOverallRisk = RiskCalculator.calculateOverallRisk(incidentList);
+            double averageRisk = totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
 
-            for (var incidentSnapshot in incidentList) {
-              double speed = (incidentSnapshot['speed'] as num).toDouble();
-              int angle = incidentSnapshot['angle'];
-
-              double overallRisk = prerisk(angle, speed);
-              totalOverallRisk += overallRisk;
-            }
-
-            double minOverallRisk = double.infinity;
-            double maxOverallRisk = 0.0;
-
-            for (var incidentSnapshot in incidentList) {
-              double speed = (incidentSnapshot['speed'] as num).toDouble();
-              int angle = incidentSnapshot['angle'];
-
-              double overallRisk = prerisk(angle, speed);
-              if (overallRisk < minOverallRisk) {
-                minOverallRisk = overallRisk;
-              }
-              if (overallRisk > maxOverallRisk) {
-                maxOverallRisk = overallRisk;
-              }
-            }
-
-            double maxAngle = -1;
-            double maxAngleSpeed = 0.0;
-
-            for (var incidentSnapshot in incidentList) {
-              double speed = (incidentSnapshot['speed'] as num).toDouble();
-              int angle = incidentSnapshot['angle'];
-
-              double overallRisk = prerisk(angle, speed);
-              if (angle.toDouble() > maxAngle) {
-                maxAngle = angle.toDouble();
-                maxAngleSpeed = speed;
-              }
-            }
-            double averageRisk =
-                totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
 
             return Center(
               child: Column(
@@ -135,10 +99,10 @@ class _StaticChartState extends State<StaticChart> {
                     radius: 50.0,
                     lineWidth: 12.0,
                     animation: true,
-                    percent: 0.7,
+                    percent: averageRisk / 100,
                     center: Text(
                       "$averageRisk%",
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 15.0),
                     ),
                     circularStrokeCap: CircularStrokeCap.butt,
@@ -155,7 +119,7 @@ class _StaticChartState extends State<StaticChart> {
                   const Text("MONTH",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 14.0)),
-                  BarChartSample2(),
+                  const BarChartSample2(),
                 ],
               ),
             );
@@ -391,7 +355,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
 }
 
 class BarChartSample2 extends StatefulWidget {
-  BarChartSample2({super.key});
+  const BarChartSample2({super.key});
 
   @override
   State<StatefulWidget> createState() => BarChartSample2State();

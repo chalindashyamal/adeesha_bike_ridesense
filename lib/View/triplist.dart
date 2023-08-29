@@ -52,7 +52,6 @@ class _TriplistState extends State<Triplist> {
           double totalOverallRisk = RiskCalculator.calculateOverallRisk(incidentList);
           double minOverallRisk = RiskCalculator.calculateMinOverallRisk(incidentList);
           double maxOverallRisk = RiskCalculator.calculateMaxOverallRisk(incidentList);
-          Tuple2<double, double> maxAngleMetrics = RiskCalculator.calculateMaxAngleMetrics(incidentList);
           double averageRisk = totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
 
        

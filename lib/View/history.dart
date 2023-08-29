@@ -1,6 +1,9 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'triplist.dart';
@@ -18,12 +21,21 @@ class _HistoryState extends State<History> {
 
   List<Module> trips = [];
   bool isLoading = true;
+  double? from_lat;
+  double? from_lot;
+  double? to_lat;
+  double? to_lot;
+  String Address = 'loading...';
+  String Address2 = 'loading...';
+  List<String> fromAddresses = [];
+  List<String> toAddresses = [];
 
   @override
   void initState() {
     super.initState();
     fetchModulesData();
   }
+
 
   Future<void> fetchModulesData() async {
     try {
@@ -39,18 +51,39 @@ class _HistoryState extends State<History> {
         return Module(
           tripID: doc.id,
           date: dateTime,
+          from_lat: doc.get("from_lat"),
+          from_lot: doc.get("from_lot"),
+          to_lat: doc.get("to_lat"),
+          to_lot: doc.get("to_lot"),
         );
       }).toList();
 
+      await fetchAddressesForTrips();
       setState(() {
-        isLoading = false;
-      });
+      isLoading = false;
+    });
     } catch (e) {
       AppToastmsg.appToastMeassage("Error fetching modules data: $e");
-      print(e);
     }
   }
 
+  Future<void> fetchAddressesForTrips() async {
+    for (int i = 0; i < trips.length; i++) {
+      double fromLat = trips[i].from_lat;
+      double fromLon = trips[i].from_lot;
+      double toLat = trips[i].to_lat;
+      double toLon = trips[i].to_lot;
+
+      Placemark fromPlace = (await placemarkFromCoordinates(fromLat, fromLon))[0];
+      Placemark toPlace = (await placemarkFromCoordinates(toLat, toLon))[0];
+
+      setState(() {
+        fromAddresses.add(fromPlace.locality!);
+        toAddresses.add(toPlace.locality!);
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,11 +91,11 @@ class _HistoryState extends State<History> {
         title: const Text('History'),
       ),
       body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(), // Show loading indicator
+          ? const Center(
+              child: CircularProgressIndicator(), 
             )
           : trips.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text('No trips available.'),
                 )
               : Padding(
@@ -108,6 +141,7 @@ class _HistoryState extends State<History> {
                         itemBuilder: (context, index) {
                           String formattedDate = DateFormat('yyyy-MM-dd')
                               .format(trips[index].date);
+                              
                           return Column(
                             children: [
                               Container(
@@ -148,9 +182,9 @@ class _HistoryState extends State<History> {
                                               style:
                                                   const TextStyle(fontSize: 15),
                                             ),
-                                            const Text(
-                                              "Colombo to Kandy",
-                                              style: TextStyle(
+                                             Text(
+                                              '${fromAddresses[index]} to ${toAddresses[index]}',
+                                              style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold),
                                             )
@@ -204,15 +238,26 @@ class _HistoryState extends State<History> {
 class Module {
   final String tripID;
   final DateTime date;
+  final double from_lat;
+  final double from_lot;
+  final double to_lat;
+  final double to_lot;
 
   Module({
     required this.tripID,
     required this.date,
+    required this.from_lat,
+    required this.from_lot,
+    required this.to_lat,
+    required this.to_lot,
   });
 }
+
+
 
 class AppToastmsg {
   static void appToastMeassage(String message) {
     // Implement your toast logic
   }
 }
+

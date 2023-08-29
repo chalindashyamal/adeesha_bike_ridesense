@@ -1,84 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
-class MapWithLocationName extends StatefulWidget {
+class LocationPage extends StatefulWidget {
+  const LocationPage({Key? key}) : super(key: key);
+
   @override
-  _MapWithLocationNameState createState() => _MapWithLocationNameState();
+  State<LocationPage> createState() => _LocationPageState();
 }
 
-class _MapWithLocationNameState extends State<MapWithLocationName> {
-  GoogleMapController? _controller;
-  LatLng? _selectedLatLng;
-  String? _locationName;
+class _LocationPageState extends State<LocationPage> {
+  String? _currentAddress;
+  Position? _currentPosition;
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller = controller;
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
   }
 
-  void _onMapTap(LatLng latLng) async {
-    setState(() {
-      _selectedLatLng = latLng;
-      _locationName = null; // Reset location name when new lat/lng is selected
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
     });
+  }
 
-    // Get the location name (address) using geocoding
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        latLng.latitude, latLng.longitude
-      );
-
-      if (placemarks.isNotEmpty) {
-        setState(() {
-          _locationName = placemarks[0].name;
-        });
-      }
-    } catch (e) {
-      print('Error getting location name: $e');
-    }
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Map with Location Name'),
-      ),
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        onTap: _onMapTap,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(6.9271, 79.8612), // Coordinates for a location in Sri Lanka
-          zoom: 8,
+      appBar: AppBar(title: const Text("Location Page")),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('LAT: ${_currentPosition?.latitude ?? ""}'),
+              Text('LNG: ${_currentPosition?.longitude ?? ""}'),
+              Text('ADDRESS: ${_currentAddress ?? ""}'),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: _getCurrentPosition,
+                child: const Text("Get Current Location"),
+              )
+            ],
+          ),
         ),
-        markers: _selectedLatLng != null
-            ? {
-                Marker(
-                  markerId: MarkerId('selectedMarker'),
-                  position: _selectedLatLng!,
-                )
-              }
-            : {},
       ),
-      floatingActionButton: _selectedLatLng != null
-          ? FloatingActionButton.extended(
-              onPressed: () {
-                if (_locationName != null) {
-                  print('Location Name: $_locationName');
-                } else {
-                  print('Location name not available.');
-                }
-              },
-              label: Text('Get Location Name'),
-              icon: Icon(Icons.location_on),
-            )
-          : null,
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: MapWithLocationName(),
-  ));
 }

@@ -195,10 +195,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                         ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: signOut,
-                      child: const Text("log out"),
-                    )
+                   
                   ],
                 ),
               ),

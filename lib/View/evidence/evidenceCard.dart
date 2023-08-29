@@ -14,7 +14,7 @@ class _EvidenceCardState extends State<EvidenceCard> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(width: 1.0, color: Colors.grey)),
@@ -24,7 +24,7 @@ class _EvidenceCardState extends State<EvidenceCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Kandy to colombo"),
+                  const Text("Kandy to colombo"),
                   Image.network(
                     "https://picsum.photos/170/100",
                     width: 170,
@@ -34,7 +34,7 @@ class _EvidenceCardState extends State<EvidenceCard> {
               ),
               Column(
                 children: [
-                  Text("75kmh"),
+                  const Text("75kmh"),
                   new CircularPercentIndicator(
                     radius: 40.0,
                     lineWidth: 12.0,
@@ -61,7 +61,7 @@ class _EvidenceCardState extends State<EvidenceCard> {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         )
       ],

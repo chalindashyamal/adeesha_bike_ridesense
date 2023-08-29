@@ -1,8 +1,11 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:tuple/tuple.dart';
 import '../components/flutter_toast.dart';
 import '../components/riskcalc.dart';
 import 'Evidence/Evidence.dart';
@@ -18,14 +21,24 @@ class LastTrip extends StatefulWidget {
 class _LastTripState extends State<LastTrip> {
   final firestoreInstance = FirebaseFirestore.instance;
   final User? user = FirebaseAuth.instance.currentUser;
+  double? from_lat;
+  double? from_lot;
+  double? to_lat;
+  double? to_lot;
 
   String? latestTripID;
   bool isLoading = true;
+  List<Module> trips = [];
+  String Address = 'loading...';
+  String Address2 = 'loading...';
 
   @override
   void initState() {
     super.initState();
+    fetchModulesData();
     fetchLatestTrip();
+    getlocation();
+    
   }
 
   Future<void> fetchLatestTrip() async {
@@ -52,8 +65,86 @@ class _LastTripState extends State<LastTrip> {
       }
     } catch (e) {
       AppToastmsg.appToastMeassage("Error fetching latest trip data: $e");
-      print(e);
     }
+  }
+
+
+  Future<void> fetchModulesData() async {
+    try {
+      final snapshot = await firestoreInstance
+          .collection("users")
+          .doc(user!.uid)
+          .collection("trips")
+          .get();
+
+      trips = snapshot.docs.map((doc) {
+        return Module(
+          tripID: doc.id,
+          from_lat: doc.get("from_lat"),
+          from_lot: doc.get("from_lot"),
+          to_lat: doc.get("to_lat"),
+          to_lot: doc.get("to_lot"),
+        );
+      }).toList();
+
+        int extractTripNumber(String tripString) {
+          if (tripString.startsWith("trip")) {
+            String numericPart = tripString.substring("trip".length);
+            return int.tryParse(numericPart) ?? -1;
+          }
+          return -1;
+        }
+        int tripNumber = extractTripNumber(latestTripID!);
+      setState(() {
+      isLoading = false;
+       from_lat = trips[tripNumber - 1].from_lat;
+       from_lot = trips[tripNumber - 1].from_lot;
+       to_lat = trips[tripNumber - 1].to_lat;
+       to_lot = trips[tripNumber - 1].to_lot;
+      });
+    } catch (e) {
+      AppToastmsg.appToastMeassage("Error fetching modules data: $e");
+    }
+  }
+
+  Future<void> getlocation() async{
+    Position position = await _getGeoLocationPosition();
+    GetAddressFromLatLong(position);
+  }
+
+  Future _getGeoLocationPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+        return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+            return Future.error('Location permissions are denied');
+        }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+}
+
+  Future GetAddressFromLatLong(Position position)async {
+      List placemarks = await placemarkFromCoordinates(from_lat!, from_lot!);
+      List placemarks2 = await placemarkFromCoordinates(to_lat!, to_lot!);
+      Placemark place = placemarks[0];
+      Placemark place2 = placemarks2[0];
+      Address = '${place.locality}';
+      Address2 = '${place2.locality}';
+      setState(()  {
+      });
   }
 
   @override
@@ -85,17 +176,17 @@ class _LastTripState extends State<LastTrip> {
           double totalOverallRisk = RiskCalculator.calculateOverallRisk(incidentList);
           double minOverallRisk = RiskCalculator.calculateMinOverallRisk(incidentList);
           double maxOverallRisk = RiskCalculator.calculateMaxOverallRisk(incidentList);
-          Tuple2<double, double> maxAngleMetrics = RiskCalculator.calculateMaxAngleMetrics(incidentList);
           double averageRisk = totalIncidents > 0 ? totalOverallRisk / totalIncidents : 0.0;
           double maxAngleSpeed = RiskCalculator.maxAngleSpeed(incidentList);
 
+        
           return Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+               Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Text(
-                  "Colombo to Kandy",
-                  style: TextStyle(fontSize: 18),
+                  '$Address to $Address2',
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
               CircularPercentIndicator(
@@ -245,4 +336,21 @@ class _LastTripState extends State<LastTrip> {
       return 100.0;
     }
   }
+}
+
+
+class Module {
+  final String tripID;
+  final double from_lat;
+  final double from_lot;
+  final double to_lat;
+  final double to_lot;
+
+  Module({
+    required this.tripID,
+    required this.from_lat,
+    required this.from_lot,
+    required this.to_lat,
+    required this.to_lot,
+  });
 }

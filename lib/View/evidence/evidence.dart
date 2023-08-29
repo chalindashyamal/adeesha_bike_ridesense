@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Evidence extends StatefulWidget {
@@ -17,6 +18,7 @@ class _EvidenceState extends State<Evidence> {
 
   List<Module> incidents = [];
   bool isLoading = true;
+  List<String> fromAddresses = [];
 
   @override
   void initState() {
@@ -38,9 +40,13 @@ class _EvidenceState extends State<Evidence> {
         return Module(
           incidentId: doc.id,
           ridespeed: doc.get("speed").toDouble(),
+          lat: doc.get("lat").toDouble(),
+          lot: doc.get("lot").toDouble(),
+          image: doc.get("cap"),
         );
       }).toList();
-
+      
+      await fetchAddressesForTrips();
       setState(() {
         isLoading = false;
       });
@@ -48,6 +54,16 @@ class _EvidenceState extends State<Evidence> {
       print("Error fetching modules data: $e");
       setState(() {
         isLoading = false;
+      });
+    }
+  }
+  Future<void> fetchAddressesForTrips() async {
+    for (int i = 0; i < incidents.length; i++) {
+      double plat = incidents[i].lat;
+      double plot = incidents[i].lot;
+      Placemark fromPlace = (await placemarkFromCoordinates(plat, plot))[0];
+      setState(() {
+        fromAddresses.add(fromPlace.locality!);
       });
     }
   }
@@ -62,7 +78,7 @@ class _EvidenceState extends State<Evidence> {
         padding: const EdgeInsets.all(8.0),
         child: isLoading
             ? Center(
-                child: CircularProgressIndicator(), // Show loading indicator
+                child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
                 child: ListView.builder(
@@ -84,9 +100,9 @@ class _EvidenceState extends State<Evidence> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text("Kandy to Colombo"),
+                                  Text('${fromAddresses[index]}'),
                                   Image.network(
-                                    "https://picsum.photos/170/100",
+                                    incidents[index].image,
                                     width: 170,
                                     height: 100,
                                   )
@@ -141,17 +157,15 @@ class _EvidenceState extends State<Evidence> {
 class Module {
   final String incidentId;
   final double ridespeed;
+  final double lat;
+  final double lot;
+  final String image;
 
   Module({
     required this.incidentId,
     required this.ridespeed,
+    required this.lat,
+    required this.lot,
+    required this.image,
   });
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: Evidence(evidenceTrip: 'trip1'),
-    ),
-  );
 }

@@ -112,7 +112,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<List<LatLng>> getOptimizedRoute(List<LatLng> positions) async {
-    final apiKey =
+    const apiKey =
         'AIzaSyC92GVBqSDBFVi1W_uGuIBLfvnkj51gPXc'; // Replace with your API key
     final response = await http.get(Uri.parse(
         'https://maps.googleapis.com/maps/api/directions/json?origin=${positions[0].latitude},${positions[0].longitude}&destination=${positions.last.latitude},${positions.last.longitude}&waypoints=${getWaypointsString(positions)}&key=$apiKey'));

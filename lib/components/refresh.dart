@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,7 +26,7 @@ class _RefreshExampleState extends State<RefreshExample> {
 
   Future<void> _refreshData() async {
     // Simulate fetching new data
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     setState(() {
       // Update the list with new data
@@ -36,7 +38,7 @@ class _RefreshExampleState extends State<RefreshExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pull-to-Refresh Example'),
+        title: const Text('Pull-to-Refresh Example'),
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,

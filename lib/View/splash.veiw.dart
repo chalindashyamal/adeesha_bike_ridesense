@@ -4,7 +4,6 @@ import 'package:adeesha_bike_ridesense/components/auth_state_changes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../utils/global.colors.dart';
-import 'login.view.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -12,7 +11,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 2), () {
-      Get.to(AuthChanges());
+      Get.to(const AuthChanges());
     });
     return Scaffold(
       backgroundColor: GlobalColor.mainColor,
