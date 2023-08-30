@@ -189,7 +189,7 @@ double mymaxOverallRisk = 0.00;
                                 children: [
                                   Text(incidents[index]
                                       .ridespeed
-                                      .toStringAsFixed(2)),
+                                      .toStringAsFixed(2)+'kmh'),
                                   CircularPercentIndicator(
                                     radius: 40.0,
                                     lineWidth: 12.0,
