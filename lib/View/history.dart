@@ -33,6 +33,7 @@ class _HistoryState extends State<History> {
   @override
   void initState() {
     super.initState();
+    fetchAddressesForTrips();
     fetchModulesData();
   }
 
