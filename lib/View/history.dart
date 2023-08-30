@@ -43,6 +43,7 @@ class _HistoryState extends State<History> {
           .collection("users")
           .doc(user!.uid)
           .collection("trips")
+          .orderBy("date", descending: true)
           .get();
 
       trips = snapshot.docs.map((doc) {
@@ -163,11 +164,12 @@ class _HistoryState extends State<History> {
                                               border: Border.all(
                                                   width: 1.0,
                                                   color: Colors.grey)),
-                                          child: const Padding(
+                                          child: Padding(
                                             padding: EdgeInsets.all(8.0),
                                             child: Align(
                                                 alignment: Alignment.center,
-                                                child: Text("01")),
+                                                child: Text('0'+(index + 1).toString())
+                                                ),
                                           ),
                                         ),
                                         const SizedBox(
