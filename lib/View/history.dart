@@ -30,6 +30,24 @@ class _HistoryState extends State<History> {
   List<String> fromAddresses = [];
   List<String> toAddresses = [];
 
+  final historyrisk = [
+    0.70,
+    0.95,
+    0.80,
+    0.80,
+    0.40,
+    0.50,
+    0.70,
+    0.90,
+    0.50,
+    0.70,
+    0.60,
+    0.80,
+    0.70,
+    0.60,
+    0.70,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -201,7 +219,7 @@ class _HistoryState extends State<History> {
                                           radius: 25.0,
                                           lineWidth: 7.0,
                                           animation: true,
-                                          percent: 0.7,
+                                          percent: historyrisk[index],
                                           circularStrokeCap:
                                               CircularStrokeCap.round,
                                           progressColor: Colors.red,
