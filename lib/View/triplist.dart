@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:tuple/tuple.dart';
 
+import '../components/flutter_toast.dart';
 import '../components/riskcalc.dart';
 import 'Evidence/Evidence.dart';
 import 'map.dart';
@@ -20,6 +23,106 @@ class Triplist extends StatefulWidget {
 }
 
 class _TriplistState extends State<Triplist> {
+
+  final firestoreInstance = FirebaseFirestore.instance;
+  final User? user = FirebaseAuth.instance.currentUser;
+  double? from_lat;
+  double? from_lot;
+  double? to_lat;
+  double? to_lot;
+
+  bool isLoading = true;
+  List<Module> trips = [];
+  String Address = 'loading...';
+  String Address2 = 'loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchModulesData2();
+    getlocation2();
+    
+  }
+
+
+  Future<void> fetchModulesData2() async {
+    try {
+      final snapshot = await firestoreInstance
+          .collection("users")
+          .doc(user!.uid)
+          .collection("trips")
+          .get();
+
+      trips = snapshot.docs.map((doc) {
+        return Module(
+          tripID: doc.id,
+          from_lat: doc.get("from_lat"),
+          from_lot: doc.get("from_lot"),
+          to_lat: doc.get("to_lat"),
+          to_lot: doc.get("to_lot"),
+        );
+      }).toList();
+
+        int extractTripNumber(String tripString) {
+          if (tripString.startsWith("trip")) {
+            String numericPart = tripString.substring("trip".length);
+            return int.tryParse(numericPart) ?? -1;
+          }
+          return -1;
+        }
+        int tripNumber = extractTripNumber(widget.tripid!);
+      setState(() {
+      isLoading = false;
+       from_lat = trips[tripNumber - 1].from_lat;
+       from_lot = trips[tripNumber - 1].from_lot;
+       to_lat = trips[tripNumber - 1].to_lat;
+       to_lot = trips[tripNumber - 1].to_lot;
+      });
+    } catch (e) {
+      AppToastmsg.appToastMeassage("Error fetching modules data: $e");
+    }
+  }
+
+  Future<void> getlocation2() async{
+    Position position = await _getGeoLocationPosition();
+    GetAddressFromLatLong(position);
+  }
+
+  Future _getGeoLocationPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+        return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+            return Future.error('Location permissions are denied');
+        }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+}
+
+  Future GetAddressFromLatLong(Position position)async {
+      List placemarks = await placemarkFromCoordinates(from_lat!, from_lot!);
+      List placemarks2 = await placemarkFromCoordinates(to_lat!, to_lot!);
+      Placemark place = placemarks[0];
+      Placemark place2 = placemarks2[0];
+      Address = '${place.locality}';
+      Address2 = '${place2.locality}';
+      setState(()  {
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     final firestoreInstance = FirebaseFirestore.instance;
@@ -59,10 +162,10 @@ class _TriplistState extends State<Triplist> {
           
           return Column(
             children: [
-              const Padding(
+               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Text(
-                  "Colombo to Kandy",
+                  '$Address to $Address2',
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -217,4 +320,21 @@ class _TriplistState extends State<Triplist> {
       return 100.0;
     }
   }
+}
+
+
+class Module {
+  final String tripID;
+  final double from_lat;
+  final double from_lot;
+  final double to_lat;
+  final double to_lot;
+
+  Module({
+    required this.tripID,
+    required this.from_lat,
+    required this.from_lot,
+    required this.to_lat,
+    required this.to_lot,
+  });
 }

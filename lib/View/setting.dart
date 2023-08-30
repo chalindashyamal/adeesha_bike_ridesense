@@ -28,6 +28,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isDarkMode = false;
+  bool isNotificationsEnabled = false; 
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +52,18 @@ class _SettingsPageState extends State<SettingsPage> {
             ListTile(
               title: Text('Notification Settings'),
               trailing: Switch(
-                value: false,
+                value: isNotificationsEnabled, // Use the state variable
                 onChanged: (newValue) {
-                  // Handle switch state changes
+                  setState(() {
+                    isNotificationsEnabled = newValue; // Update the state
+                  });
+
+                  // Handle notification enable/disable logic here
+                  if (newValue) {
+                    print('Notifications enabled');
+                  } else {
+                    print('Notifications disabled');
+                  }
                 },
               ),
             ),
@@ -90,12 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
-            ListTile(
-              title: Text('Sign Out'),
-              onTap: () {
-                // Handle tap
-              },
-            ),
+           
           ],
         ),
       ),
@@ -166,3 +171,4 @@ class _PasswordResetDialogState extends State<PasswordResetDialog> {
     );
   }
 }
+

@@ -310,7 +310,7 @@ class _LoyalityViewState extends State<LoyalityView> {
                           onPressed: () {
                             incrementQuantity(-withdrawValue);
                           },
-                          child: const Text("Submit")),
+                          child: const Text("Withdraw")),
                     ],
                   )),
               const LineChartSample2()
