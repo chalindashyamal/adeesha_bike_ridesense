@@ -20,10 +20,13 @@ class _EvidenceState extends State<Evidence> {
   bool isLoading = true;
   List<String> fromAddresses = [];
 
+double mymaxOverallRisk = 0.00;
+
   @override
   void initState() {
     super.initState();
     fetchModulesData();
+    
   }
 
   Future<void> fetchModulesData() async {
@@ -32,7 +35,7 @@ class _EvidenceState extends State<Evidence> {
           .collection("users")
           .doc(user!.uid)
           .collection("trips")
-          .doc(widget.evidenceTrip) // Use the provided trip ID
+          .doc(widget.evidenceTrip)
           .collection("incident")
           .get();
 
@@ -41,14 +44,17 @@ class _EvidenceState extends State<Evidence> {
           incidentId: doc.id,
           ridespeed: doc.get("speed").toDouble(),
           lat: doc.get("lat").toDouble(),
-          lot: doc.get("lot").toDouble(),
+          lot: doc.get("lot"),
           image: doc.get("cap"),
+          angle: doc.get("angle")
         );
       }).toList();
       
       await fetchAddressesForTrips();
       setState(() {
         isLoading = false;
+        mymaxOverallRisk = calculateMaxOverallRisk(incidents);
+
       });
     } catch (e) {
       print("Error fetching modules data: $e");
@@ -68,6 +74,72 @@ class _EvidenceState extends State<Evidence> {
     }
   }
 
+
+  static double calculateMaxOverallRisk(List<Module> incidents) {
+    double maxOverallRisk = 0.0;
+
+    for (var incidentSnapshot in incidents) {
+      double speed = incidentSnapshot.ridespeed;
+      int angle = incidentSnapshot.angle;
+
+      double overallRisk = prerisk(angle, speed);
+      if (overallRisk > maxOverallRisk) {
+        maxOverallRisk = overallRisk;
+      }
+    }
+
+    return maxOverallRisk;
+  }
+  
+
+  static double prerisk(int angle, double speed) {
+    double speedRisk = calculateSpeedRisk(speed);
+    double angleRisk = calculateAngleRisk(angle, speed);
+    double overallRisk = (speedRisk + angleRisk) / 2;
+
+    return overallRisk;
+  }
+
+  static double calculateSpeedRisk(double speed) {
+    if (speed <= 10) {
+      return 0.0;
+    } else if (speed <= 20) {
+      return 20.0;
+    } else if (speed <= 40) {
+      return 40.0;
+    } else if (speed <= 60) {
+      return 60.0;
+    } else if (speed <= 80) {
+      return 80.0;
+    } else {
+      return 100.0;
+    }
+  }
+
+ static double calculateAngleRisk(int angle, double speed) {
+    if (speed <= 10.0 && angle <= 2) {
+      // Make sure to use 0.0 instead of 0
+      return 0.0;
+    } else if (speed <= 10.0 && angle <= 18) {
+      // Make sure to use 0.0 instead of 0
+      return 20.0;
+    } else if (speed <= 10.0 && angle <= 36) {
+      // Make sure to use 0.0 instead of 0
+      return 40.0;
+    } else if (speed <= 10.0 && angle <= 54) {
+      // Make sure to use 0.0 instead of 0
+      return 60.0;
+    } else if (speed <= 10.0 && angle <= 72) {
+      // Make sure to use 0.0 instead of 0
+      return 80.0;
+    } else if (speed <= 10.0) {
+      return 0.0;
+    } else {
+      return 100.0;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,6 +158,9 @@ class _EvidenceState extends State<Evidence> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: incidents.length,
                   itemBuilder: (context, index) {
+                    double incidentRisk = calculateMaxOverallRisk([incidents[index]]);
+                    print('--------------------');
+                              print(incidentRisk);
                     return Column(
                       children: [
                         Container(
@@ -117,9 +192,9 @@ class _EvidenceState extends State<Evidence> {
                                     radius: 40.0,
                                     lineWidth: 12.0,
                                     animation: true,
-                                    percent: 0.7,
-                                    center: const Text(
-                                      "70.0%",
+                                    percent: incidentRisk / 100,
+                                    center: Text(
+                                      "$incidentRisk%",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15.0,
@@ -160,6 +235,8 @@ class Module {
   final double lat;
   final double lot;
   final String image;
+  final int angle;
+
 
   Module({
     required this.incidentId,
@@ -167,5 +244,6 @@ class Module {
     required this.lat,
     required this.lot,
     required this.image,
+    required this.angle,
   });
 }

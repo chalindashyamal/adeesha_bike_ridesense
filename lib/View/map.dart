@@ -50,13 +50,13 @@ class _MapScreenState extends State<MapScreen> {
         );
       }).toList();
       setState(() {
-        isLoading = false; // Set loading state to false
+        isLoading = false; 
       });
     } catch (e) {
       AppToastmsg.appToastMeassage("Error fetching modules data: $e");
       print(e);
       setState(() {
-        isLoading = false; // Set loading state to false
+        isLoading = false; 
       });
     }
   }
