@@ -25,6 +25,7 @@ double mymaxOverallRisk = 0.00;
   @override
   void initState() {
     super.initState();
+    fetchAddressesForTrips();
     fetchModulesData();
     
   }
