@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 import '../components/flutter_toast.dart';
 import '../components/linechart.dart';
 
@@ -112,11 +112,22 @@ class _LoyalityViewState extends State<LoyalityView> {
           .doc('PsVVqV0JVqqz79HI8KBf');
       await itemRef.update({'myvalue': FieldValue.increment(incVal)});
       fetchPoints();
+      appToastMeassage('Points withdrawal is successful');
     } catch (e) {
       print('Failed to update points: $e');
     }
   }
 
+  appToastMeassage(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      backgroundColor: Colors.white,
+      textColor: Colors.black,
+      fontSize: 16.0,
+    );
+  }
 
 
 
