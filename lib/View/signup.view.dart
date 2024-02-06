@@ -1,4 +1,3 @@
-
 import 'package:adeesha_bike_ridesense/View/menu.dart';
 import 'package:adeesha_bike_ridesense/View/widgets/text.form.global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,7 +17,7 @@ class SignupView extends StatelessWidget {
       TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>(); 
+  final _formKey = GlobalKey<FormState>();
 
   Future<User?> _createUserWithEmailAndPassword(
       String email, String password) async {
@@ -88,7 +87,7 @@ class SignupView extends StatelessWidget {
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      'RIDESENSE',
+                      'CyclistSafety Pro',
                       style: TextStyle(
                         color: GlobalColor.mainColor,
                         fontSize: 35,
